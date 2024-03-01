@@ -26,7 +26,7 @@ import {
 } from "@env";
 import axios from "axios";
 import Base64 from "js-base64";
-//redux filex
+//redux files
 import store from "./src/redux/store";
 import {
   addToCart,
@@ -34,6 +34,7 @@ import {
   decrementQuantity,
   removeCartItem,
 } from "./src/redux/cartSlice";
+
 // end of redux
 const apiUrl = WOO_API_URL;
 const apiKey = CONSUMER_KEY;
