@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
-import { Provider, connect } from "react-redux";
-import { configureStore, createSlice } from "@reduxjs/toolkit";
-import { combineReducers } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
 import { Feather } from "@expo/vector-icons";
@@ -16,6 +13,7 @@ import {
   Image,
   TextInput,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -28,79 +26,14 @@ import {
 } from "@env";
 import axios from "axios";
 import Base64 from "js-base64";
-import { TouchableOpacity } from "react-native";
-// Action Creators
-const addToCart = (product) => {
-  return {
-    type: "cart/addToCart",
-    payload: product,
-  };
-};
-
-const incrementQuantity = (productId) => {
-  return {
-    type: "cart/incrementQuantity",
-    payload: productId,
-  };
-};
-
-const decrementQuantity = (productId) => {
-  return {
-    type: "cart/decrementQuantity",
-    payload: productId,
-  };
-};
-const removeCartItem = (productId) => {
-  return {
-    type: "cart/removeCartItem",
-    payload: productId,
-  };
-}; // this is for redux fix them in componetn soon
-// Reducers
-const cartSlice = createSlice({
-  name: "cart",
-  initialState: {
-    items: [],
-    quantityMap: {},
-  },
-  reducers: {
-    addToCart: (state, action) => {
-      const product = action.payload;
-      const existingItem = state.items.find((item) => item.id === product.id);
-
-      if (!existingItem) {
-        state.items.push(product);
-        state.quantityMap[product.id] = 1;
-      }
-    },
-    incrementQuantity: (state, action) => {
-      const productId = action.payload;
-      state.quantityMap[productId] += 1;
-    },
-    decrementQuantity: (state, action) => {
-      const productId = action.payload;
-      if (state.quantityMap[productId] > 1) {
-        state.quantityMap[productId] -= 1;
-      } else {
-        state.items = state.items.filter((item) => item.id !== productId);
-        delete state.quantityMap[productId];
-      }
-    },
-    removeCartItem: (state, action) => {
-      const productId = action.payload;
-      state.items = state.items.filter((item) => item.id !== productId);
-      delete state.quantityMap[productId];
-    },
-  },
-});
-
-const rootReducer = combineReducers({
-  cart: cartSlice.reducer,
-});
-
-const store = configureStore({
-  reducer: rootReducer,
-});
+//redux filex
+import store from "./src/redux/store";
+import {
+  addToCart,
+  incrementQuantity,
+  decrementQuantity,
+  removeCartItem,
+} from "./src/redux/cartSlice";
 // end of redux
 const apiUrl = WOO_API_URL;
 const apiKey = CONSUMER_KEY;
@@ -930,7 +863,7 @@ export default function App() {
           </Tab.Screen>
         </Tab.Navigator>
       </NavigationContainer>
-      <Toast ref={(ref) => Toast.setRef(ref)} />
+      <Toast />
     </Provider>
   );
 }
