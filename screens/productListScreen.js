@@ -11,24 +11,10 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import {
-  WOO_API_URL,
-  CONSUMER_KEY,
-  CONSUMER_SECRET,
-  WOO_API_CURRENCY,
-} from "@env";
-import axios from "axios";
-import Base64 from "js-base64";
-//redux files
+
 import { addToCart } from "../src/redux/cartSlice";
 import store from "../src/redux/store";
-
-import fetchCurrencyData from "../components/fetchCurrency";
-// end of redux
-const apiUrl = WOO_API_URL;
-const apiKey = CONSUMER_KEY;
-const apiSecret = CONSUMER_SECRET;
-const apiCur = WOO_API_CURRENCY;
+import fetchProducts from "../hooks/fetch";
 
 const ProductListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -53,66 +39,6 @@ const ProductListScreen = ({ navigation }) => {
       }
     } catch (error) {
       console.error(error);
-    }
-  };
-  const fetchProducts = async (page) => {
-    try {
-      const currencyRate = await fetchCurrencyData();
-
-      const authString = `${apiKey}:${apiSecret}`;
-      const encodedAuth = Base64.encode(authString);
-
-      // Modify the API URL to include the page parameter for pagination
-      const response = await axios.get(`${apiUrl}/products?page=${page}`, {
-        headers: {
-          Authorization: `Basic ${encodedAuth}`,
-        },
-      });
-
-      const products = response.data;
-      console.log(products);
-
-      const productsWithCurrency = await Promise.all(
-        products.map(async (product) => {
-          const priceInCurrency = product.price * currencyRate;
-
-          if (product.type === "variable") {
-            const variationResponse = await axios.get(
-              `${apiUrl}/products/${product.id}/variations`,
-              {
-                headers: {
-                  Authorization: `Basic ${encodedAuth}`,
-                },
-              }
-            );
-            const variations = variationResponse.data;
-            const reg = variations[0].regular_price;
-            const regularPrice = reg * currencyRate;
-
-            const sale = variations[0].sale_price;
-            const salePrice = sale * currencyRate;
-            console.log(salePrice);
-            return {
-              ...product,
-              priceInCurrency,
-              variations,
-              regularPrice,
-              salePrice,
-            };
-          } else {
-            return {
-              ...product,
-              priceInCurrency,
-            };
-          }
-        })
-      );
-
-      console.log(productsWithCurrency);
-      return productsWithCurrency;
-    } catch (error) {
-      console.error(error);
-      return [];
     }
   };
 
