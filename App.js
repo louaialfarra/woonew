@@ -14,6 +14,8 @@ import CartScreen from "./screens/cartScreen";
 import Checkout from "./screens/checkoutScreen";
 import OrderSuccess from "./screens/orderScreen";
 
+import Category from "./screens/category";
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -85,6 +87,7 @@ export default function App() {
               />
             )}
           </Tab.Screen>
+          <Tab.Screen name="Category" component={Category} />
         </Tab.Navigator>
       </NavigationContainer>
       <Toast />
