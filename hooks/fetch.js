@@ -1,9 +1,4 @@
-import {
-  WOO_API_URL,
-  CONSUMER_KEY,
-  CONSUMER_SECRET,
-  WOO_API_CURRENCY,
-} from "@env";
+import { WOO_API_URL, CONSUMER_KEY, CONSUMER_SECRET } from "@env";
 import axios from "axios";
 import Base64 from "js-base64";
 
@@ -21,9 +16,15 @@ const fetchProducts = async (page) => {
     const encodedAuth = Base64.encode(authString);
 
     // Modify the API URL to include the page parameter for pagination
-    const response = await axios.get(`${apiUrl}/products?page=${page}`, {
+    const response = await axios.get(`${apiUrl}/products`, {
       headers: {
         Authorization: `Basic ${encodedAuth}`,
+      },
+      params: {
+        page,
+        status: "publish",
+        orderby: "date",
+        order: "desc",
       },
     });
 

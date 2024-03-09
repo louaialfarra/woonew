@@ -24,10 +24,6 @@ const ProductListScreen = ({ navigation }) => {
   const [page, setPage] = useState(1);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
-
   const loadProducts = async () => {
     try {
       const data = await fetchProducts(page);
@@ -43,12 +39,13 @@ const ProductListScreen = ({ navigation }) => {
   };
 
   const handleLoadMore = () => {
-    setIsLoadingMore(true);
-    setPage((prevPage) => prevPage + 1);
+    if (!isLoadingMore && hasMoreProducts) {
+      setIsLoadingMore(true);
+    }
   };
 
   useEffect(() => {
-    if (isLoadingMore) {
+    if (isLoadingMore && hasMoreProducts) {
       loadProducts()
         .then(() => setIsLoadingMore(false))
         .catch((error) => {
@@ -56,7 +53,13 @@ const ProductListScreen = ({ navigation }) => {
           setIsLoadingMore(false);
         });
     }
-  }, [isLoadingMore]);
+  }, [isLoadingMore, hasMoreProducts]);
+
+  const onEndReached = () => {
+    if (!isLoadingMore && hasMoreProducts) {
+      handleLoadMore();
+    }
+  };
 
   const handleOptionSelect = (productId, attributeName, option) => {
     setSelectedOptions((prevSelectedOptions) => ({
@@ -190,7 +193,7 @@ const ProductListScreen = ({ navigation }) => {
         renderItem={renderProductItem}
         numColumns={numColumns}
         columnWrapperStyle={styles.row}
-        onEndReached={handleLoadMore}
+        onEndReached={onEndReached}
         onEndReachedThreshold={0.1}
         ListFooterComponent={
           isLoadingMore ? (
