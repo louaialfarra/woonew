@@ -35,6 +35,8 @@ const fetchProducts = async (page) => {
       products.map(async (product) => {
         const priceInCurrency = product.price * currencyRate;
 
+        // fetch the price if it is variable cause its not showing in the normal  fetch
+        //aslo fetch the sale price
         if (product.type === "variable") {
           const variationResponse = await axios.get(
             `${apiUrl}/products/${product.id}/variations`,
@@ -51,6 +53,7 @@ const fetchProducts = async (page) => {
           const sale = variations[0].sale_price;
           const salePrice = sale * currencyRate;
           console.log(salePrice);
+
           return {
             ...product,
             priceInCurrency,

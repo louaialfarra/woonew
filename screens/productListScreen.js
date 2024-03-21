@@ -18,6 +18,7 @@ import fetchProducts from "../hooks/fetch";
 
 const ProductListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+
   const [products, setProducts] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -26,12 +27,15 @@ const ProductListScreen = ({ navigation }) => {
 
   const loadProducts = async () => {
     try {
+      //fetch 2 pages = 20 product updated by louai and copilot
       const data = await fetchProducts(page);
-      if (data.length === 0) {
+      const data2 = await fetchProducts(page + 1);
+      const allProduct = [...data, ...data2];
+      if (data.allProduct === 0) {
         setHasMoreProducts(false);
       } else {
-        setProducts((prevProducts) => [...prevProducts, ...data]);
-        setPage((prevPage) => prevPage + 1);
+        setProducts((prevProducts) => [...prevProducts, ...allProduct]);
+        setPage((prevPage) => prevPage + 2);
       }
     } catch (error) {
       console.error(error);
@@ -197,7 +201,7 @@ const ProductListScreen = ({ navigation }) => {
         onEndReachedThreshold={0.1}
         ListFooterComponent={
           isLoadingMore ? (
-            <ActivityIndicator style={styles.loader} size="small" />
+            <ActivityIndicator style={styles.loader} size="medium" />
           ) : hasMoreProducts ? (
             <Button title="Load More" onPress={handleLoadMore} />
           ) : null
