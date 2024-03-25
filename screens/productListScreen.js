@@ -74,6 +74,8 @@ const ProductListScreen = ({ navigation }) => {
       },
     }));
   };
+  // handleoption is very simple  first we copy the prefselected option  then we acces the product ID
+  // the we type ...prevselected OPtion[product ir] we copy every thing inside the product id and update only  the attribute
   const handleAddToCart = (product) => {
     const selectedAttributes = product.attributes.map((attribute) => ({
       name: attribute.name,
@@ -102,6 +104,7 @@ const ProductListScreen = ({ navigation }) => {
           })
         );
       }
+
       return false;
     });
 
