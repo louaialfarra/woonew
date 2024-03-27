@@ -201,17 +201,21 @@ If all comparisons match (i.e., every attribute in the existing item has a match
     return (
       <View style={styles.productItem}>
         <TouchableOpacity onPress={() => handleProductPress(item)}>
-          {item.images && item.images?.[0]?.src ? (
+          {item.images?.[0]?.src ? (
             <Image
-              source={{ uri: item.images?.[0]?.src }}
+              source={{ uri: item.images[0].src }}
               style={styles.productImage}
             />
           ) : (
             <Text>No image available</Text>
           )}
+
           <Text style={styles.itemName}>{item.name}</Text>
+
           {hasVariationSalePrice ? (
-            <Text style={styles.salePrice}>Sale Price: {item.salePrice}</Text>
+            <Text style={styles.salePrice}>
+              Sale Price: {item.salePrice.toLocaleString()}
+            </Text>
           ) : (
             <Text style={styles.price}>
               Price: {item.priceInCurrency.toLocaleString()} {item.currency}

@@ -34,7 +34,7 @@ const fetchProducts = async (page) => {
     const productsWithCurrency = await Promise.all(
       products.map(async (product) => {
         const priceInCurrency = product.price * currencyRate;
-
+        const currency = "SYP";
         // fetch the price if it is variable cause its not showing in the normal  fetch
         //aslo fetch the sale price
         if (product.type === "variable") {
@@ -53,18 +53,19 @@ const fetchProducts = async (page) => {
           const sale = variations[0].sale_price;
           const salePrice = sale * currencyRate;
           console.log(salePrice);
-
           return {
             ...product,
             priceInCurrency,
             variations,
             regularPrice,
             salePrice,
+            currency,
           };
         } else {
           return {
             ...product,
             priceInCurrency,
+            currency,
           };
         }
       })
