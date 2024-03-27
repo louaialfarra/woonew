@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  items: [],
+  quantityMap: {},
+};
+
 const cartSlice = createSlice({
   name: "cart",
-  initialState: {
-    items: [],
-    quantityMap: {},
-  },
+  initialState,
   reducers: {
     addToCart: (state, action) => {
       const product = action.payload;
@@ -16,6 +18,7 @@ const cartSlice = createSlice({
         state.quantityMap[product.id] = 1;
       }
     },
+
     incrementQuantity: (state, action) => {
       const productId = action.payload;
       state.quantityMap[productId] += 1;
@@ -36,10 +39,12 @@ const cartSlice = createSlice({
     },
   },
 });
+// this are action creator
 export const {
   addToCart,
   incrementQuantity,
   decrementQuantity,
   removeCartItem,
 } = cartSlice.actions;
+
 export default cartSlice.reducer;
