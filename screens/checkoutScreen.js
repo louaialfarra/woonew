@@ -7,8 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
+
 import {
   WOO_API_URL,
   CONSUMER_KEY,

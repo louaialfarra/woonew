@@ -26,9 +26,11 @@ const ProductDetailScreen = ({ route }) => {
       [attributeName]: option,
     }));
   };
+
   const handleImagePress = (index) => {
     setSelectedImageIndex(index);
   };
+
   const handleAddToCart = () => {
     const selectedAttributes = product.attributes.map((attribute) => ({
       name: attribute.name,

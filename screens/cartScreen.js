@@ -8,8 +8,6 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
 
 import {
   incrementQuantity,
@@ -62,13 +60,13 @@ const CartScreen = ({ navigation }) => {
     }
   };
 
+  const handleRemoveItem = (item) => {
+    dispatch(removeCartItem(item.id));
+  };
+
   const renderCartItem = ({ item }) => {
     const imageSrc = item.images?.[0]?.src;
     const quantity = quantityMap[item.id] || 1;
-
-    const handleRemoveItem = () => {
-      dispatch(removeCartItem(item.id));
-    };
 
     const subtotal = item.priceInCurrency * quantity;
 
@@ -109,13 +107,14 @@ const CartScreen = ({ navigation }) => {
               <Text style={styles.quantityButtonText}>+</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={handleRemoveItem}>
+          <TouchableOpacity onPress={() => handleRemoveItem(item)}>
             <Feather name="trash" size={20} color="red" />
           </TouchableOpacity>
         </View>
       </View>
     );
   };
+
   // Calculate the total price of all products
   const totalPrice = cartItems.reduce(
     (total, item) => total + item.priceInCurrency * (quantityMap[item.id] || 1),

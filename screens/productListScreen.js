@@ -15,7 +15,7 @@ import {
 import { addToCart } from "../src/redux/cartSlice";
 import store from "../src/redux/store";
 import fetchProducts from "../hooks/fetch";
-
+import showToast from "../components/showToast";
 const ProductListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
@@ -141,22 +141,18 @@ If all comparisons match (i.e., every attribute in the existing item has a match
     });
 
     if (existingItem) {
-      Toast.show({
-        type: "info",
-        text1: "Item Already in Cart",
-        text2: "This item is already in your cart.",
-        visibilityTime: 2000,
-        autoHide: true,
-      });
+      showToast(
+        "info",
+        "Item Already in Cart",
+        "This item is already in your cart."
+      );
     } else {
       dispatch(addToCart(itemWithAttributes));
-      Toast.show({
-        type: "success",
-        text1: "Item Added to Cart",
-        text2: "The item has been added to your cart.",
-        visibilityTime: 2000,
-        autoHide: true,
-      });
+      showToast(
+        "success",
+        "Item Added to Cart",
+        "The item has been added to your cart."
+      );
     }
   };
 

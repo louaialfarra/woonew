@@ -16,6 +16,8 @@ import OrderSuccess from "./screens/orderScreen";
 
 import Category from "./screens/category";
 
+import showToast from "./components/showToast";
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -30,18 +32,11 @@ export default function App() {
       "The item has been added to your cart."
     );
   };
+
   const handleCheckout = () => {
     // Handle the checkout logic
   };
-  const showToast = (type, text1, text2) => {
-    Toast.show({
-      type: type,
-      text1: text1,
-      text2: text2,
-      visibilityTime: 2000, // 2 seconds
-      autoHide: true,
-    });
-  };
+
   return (
     <Provider store={store}>
       <NavigationContainer>
