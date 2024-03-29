@@ -12,7 +12,7 @@ import {
   StyleSheet,
 } from "react-native";
 
-import { addToCart } from "../src/redux/cartSlice";
+import { addToCart, selectOption } from "../src/redux/cartSlice";
 import store from "../src/redux/store";
 import fetchProducts from "../hooks/fetch";
 import showToast from "../components/showToast";
@@ -20,11 +20,11 @@ const ProductListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const [products, setProducts] = useState([]);
-  const [selectedOptions, setSelectedOptions] = useState({});
+  //const [selectedOptions, setSelectedOptions] = useState({});
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
-
+  const selectedOptions = useSelector((store) => store.cart.selectedOptions);
   const loadProducts = async () => {
     try {
       //fetch 2 pages = 20 product updated by louai and copilot
@@ -47,7 +47,6 @@ const ProductListScreen = ({ navigation }) => {
       setIsLoadingMore(true);
     }
   };
-  //the use effect is exectured when the isloading more changed in handel andin the reac hend and the product is loaded
   useEffect(() => {
     if (isLoadingMore && hasMoreProducts) {
       loadProducts()
@@ -66,16 +65,8 @@ const ProductListScreen = ({ navigation }) => {
   };
 
   const handleOptionSelect = (productId, attributeName, option) => {
-    setSelectedOptions((prevSelectedOptions) => ({
-      ...prevSelectedOptions,
-      [productId]: {
-        ...prevSelectedOptions[productId],
-        [attributeName]: option,
-      },
-    }));
+    dispatch(selectOption({ productId, attributeName, option }));
   };
-  // handleoption is very simple  first we copy the prevselected option  then we acces the product ID
-  // the we type ...prevselected OPtion[product ir] we copy every thing inside the product id and update only  the attribute
 
   const handleAddToCart = (product) => {
     const selectedAttributes = product.attributes.map((attribute) => ({
@@ -90,34 +81,7 @@ const ProductListScreen = ({ navigation }) => {
       quantity: 1,
       selectedAttributes,
     };
-    //This ensures uniqueness for each item with different attribute selections.  in the prodict id json stringfy
-    /*{
-  // Original product properties (spread from 'product')
-  id: 'originalProductId_[{"name":"Color","selectedOption":"Blue"},{"name":"Size","selectedOption":"Medium"}]',
-  // Other properties
-  quantity: 1,
-  selectedAttributes: [
-    {
-      name: 'Color',
-      selectedOption: 'Blue'
-    },
-    {
-      name: 'Size',
-      selectedOption: 'Medium'
-    }
-  ]
-} */
 
-    /*const selectedAttributes = [
-  {
-    name: 'Color',
-    selectedOption: 'Blue'
-  },
-  {
-    name: 'Size',
-    selectedOption: 'Medium'
-  }
-];*/
     const existingItem = store.getState().cart.items.find((item) => {
       if (item.id === itemWithAttributes.id) {
         return (
@@ -131,12 +95,7 @@ const ProductListScreen = ({ navigation }) => {
             return correspondingAttr.selectedOption === itemAttr.selectedOption;
           })
         );
-      } /*The .every() method iterates over each attribute in item.selectedAttributes.
-For each itemAttr (attribute in the existing item), it looks for a corresponding attribute in itemWithAttributes.selectedAttributes with the same name.
-If found, it compares the selectedOption values of the corresponding attributes.
-If all comparisons match (i.e., every attribute in the existing item has a matching attribute in the new item with the same selected option), the condition evaluates to true. */
-      //It ensures that the lengths of item.selectedAttributes and itemWithAttributes.selectedAttributes are the same.
-      //This ensures that both items have the same number of attributes.
+      }
       return false;
     });
 

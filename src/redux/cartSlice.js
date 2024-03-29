@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   items: [],
   quantityMap: {},
+  selectedOptions: {},
 };
 
 const cartSlice = createSlice({
@@ -37,6 +38,21 @@ const cartSlice = createSlice({
       state.items = state.items.filter((item) => item.id !== productId);
       delete state.quantityMap[productId];
     },
+    selectOption: (state, action) => {
+      const { productId, attributeName, option } = action.payload;
+      state.selectedOptions = {
+        ...state.selectedOptions,
+        [productId]: {
+          ...state.selectedOptions[productId],
+          [attributeName]: option,
+        },
+      };
+      /* or we can use  this 
+      state.selectedOptions[productId] = {
+        ...state.selectedOptions[productId],
+        [attributeName]: option,
+      };*/
+    },
   },
 });
 // this are action creator
@@ -45,6 +61,7 @@ export const {
   incrementQuantity,
   decrementQuantity,
   removeCartItem,
+  selectOption,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
