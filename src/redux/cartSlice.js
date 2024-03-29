@@ -53,6 +53,14 @@ const cartSlice = createSlice({
         [attributeName]: option,
       };*/
     },
+    selectOptionD: (state, action) => {
+      const { attributeName, option } = action.payload;
+      state.selectedOptions = {
+        ...state.selectedOptions,
+        [attributeName]: option,
+      };
+      //state.selectedOptions[attributeName] = option;
+    },
   },
 });
 // this are action creator
@@ -62,6 +70,7 @@ export const {
   decrementQuantity,
   removeCartItem,
   selectOption,
+  selectOptionD,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

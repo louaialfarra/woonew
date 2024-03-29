@@ -25,6 +25,7 @@ const ProductListScreen = ({ navigation }) => {
   const [page, setPage] = useState(1);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
   const selectedOptions = useSelector((store) => store.cart.selectedOptions);
+
   const loadProducts = async () => {
     try {
       //fetch 2 pages = 20 product updated by louai and copilot

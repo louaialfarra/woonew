@@ -11,20 +11,18 @@ import {
 } from "react-native";
 
 import store from "../src/redux/store";
-import { addToCart } from "../src/redux/cartSlice";
+import { addToCart, selectOptionD } from "../src/redux/cartSlice";
 
 const ProductDetailScreen = ({ route }) => {
   const { product } = route.params;
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
-  const [selectedOptions, setSelectedOptions] = useState({});
+  //const [selectedOptions, setSelectedOptions] = useState({});
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const selectedOptions = useSelector((state) => state.cart.selectedOptions);
 
   const handleOptionSelect = (attributeName, option) => {
-    setSelectedOptions((prevSelectedOptions) => ({
-      ...prevSelectedOptions,
-      [attributeName]: option,
-    }));
+    dispatch(selectOptionD({ attributeName, option }));
   };
 
   const handleImagePress = (index) => {
