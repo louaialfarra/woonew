@@ -48,9 +48,7 @@ export default function App() {
                   name="ProductListScreen"
                   options={{ headerShown: false }}
                 >
-                  {(props) => (
-                    <ProductListScreen {...props} addToCart={addToCart} />
-                  )}
+                  {(props) => <ProductListScreen {...props} />}
                 </Stack.Screen>
                 <Stack.Screen
                   name="ProductDetail"

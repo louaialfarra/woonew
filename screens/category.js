@@ -23,24 +23,24 @@ const Category = () => {
 
       const catdata = response.data;
       return catdata;
-      console.log(catdata);
     } catch (error) {
       console.error(error);
     }
   };
+  // we can update this fetch by passing params and can normal fetch update it soon
   const fetchProductsByCategory = async (categoryId) => {
     try {
       const authString = `${apiKey}:${apiSecret}`;
       const encodedAuth = Base64.encode(authString);
 
-      const response = await axios.get(
-        `${apiUrl}/products?category=${categoryId}`,
-        {
-          headers: {
-            Authorization: `Basic ${encodedAuth}`,
-          },
-        }
-      );
+      const response = await axios.get(`${apiUrl}/products`, {
+        headers: {
+          Authorization: `Basic ${encodedAuth}`,
+        },
+        params: {
+          category: categoryId,
+        },
+      });
       const productCatData = response.data;
       return productCatData;
     } catch (error) {
@@ -53,12 +53,12 @@ const Category = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [products, setProducts] = useState([]);
 
-    useEffect(() => {
-      const fetchCategoriesData = async () => {
-        const data = await fetchCategories();
-        setCategories(data);
-      };
+    const fetchCategoriesData = async () => {
+      const data = await fetchCategories();
+      setCategories(data);
+    };
 
+    useEffect(() => {
       fetchCategoriesData();
     }, []);
 
@@ -75,11 +75,13 @@ const Category = () => {
         </View>
       </TouchableHighlight>
     );
+
     const renderProductItem = ({ item }) => (
       <View>
         <Text>{item.name}</Text>
       </View>
     );
+
     return (
       <View>
         <Text>Categories:</Text>
@@ -91,7 +93,7 @@ const Category = () => {
 
         {selectedCategory && (
           <>
-            <Text>Products:</Text>
+            <Text style={{ fontSize: 50 }}>Products:</Text>
             <FlatList
               data={products}
               keyExtractor={(item) => item.id.toString()}
