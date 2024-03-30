@@ -24,15 +24,6 @@ const Stack = createStackNavigator();
 export default function App() {
   const [cartItems, setCartItems] = useState([]);
 
-  const addToCart = (product) => {
-    setCartItems((prevCartItems) => [...prevCartItems, product]);
-    showToast(
-      "success",
-      "Item Added to Cart",
-      "The item has been added to your cart."
-    );
-  };
-
   const handleCheckout = () => {
     // Handle the checkout logic
   };
@@ -80,7 +71,19 @@ export default function App() {
               />
             )}
           </Tab.Screen>
-          <Tab.Screen name="Category" component={Category} />
+          <Tab.Screen name="Category list screen">
+            {() => (
+              <Stack.Navigator>
+                <Stack.Screen name="category" options={{ headerShown: false }}>
+                  {(props) => <Category {...props} />}
+                </Stack.Screen>
+                <Stack.Screen
+                  name="ProductDetail"
+                  component={ProductDetailScreen}
+                />
+              </Stack.Navigator>
+            )}
+          </Tab.Screen>
         </Tab.Navigator>
       </NavigationContainer>
       <Toast />
@@ -88,7 +91,7 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
+/*const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -192,6 +195,6 @@ const styles = StyleSheet.create({
   salePrice: {
     color: "red",
   },
-});
+});*/
 
 //fix product is fetch draft  adn th sort of the products

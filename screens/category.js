@@ -1,5 +1,6 @@
 import { View, Text, FlatList, TouchableHighlight } from "react-native";
 import React, { useState, useEffect } from "react";
+import fetchCurrencyData from "../hooks/fetchCurrency";
 
 import { WOO_API_URL, CONSUMER_KEY, CONSUMER_SECRET } from "@env";
 import axios from "axios";
@@ -9,8 +10,8 @@ const apiUrl = WOO_API_URL;
 const apiKey = CONSUMER_KEY;
 const apiSecret = CONSUMER_SECRET;
 
-const Category = () => {
-  const fetchCategories = async () => {
+const Category = ({ navigation }) => {
+  const fetchCategories = async (page) => {
     try {
       const authString = `${apiKey}:${apiSecret}`;
       const encodedAuth = Base64.encode(authString);
@@ -19,6 +20,7 @@ const Category = () => {
         headers: {
           Authorization: `Basic ${encodedAuth}`,
         },
+        params: { page },
       });
 
       const catdata = response.data;
@@ -32,7 +34,7 @@ const Category = () => {
     try {
       const authString = `${apiKey}:${apiSecret}`;
       const encodedAuth = Base64.encode(authString);
-
+      const currencyRate = await fetchCurrencyData();
       const response = await axios.get(`${apiUrl}/products`, {
         headers: {
           Authorization: `Basic ${encodedAuth}`,
@@ -41,8 +43,22 @@ const Category = () => {
           category: categoryId,
         },
       });
-      const productCatData = response.data;
-      return productCatData;
+      const products = response.data;
+
+      const productsWithCurrency = await Promise.all(
+        products.map(async (product) => {
+          const priceInCurrency = product.price * currencyRate;
+          const currency = "SYP";
+
+          return {
+            ...product,
+            priceInCurrency,
+            currency,
+          };
+        })
+      );
+
+      return productsWithCurrency;
     } catch (error) {
       console.error(error);
     }
@@ -54,13 +70,22 @@ const Category = () => {
     const [products, setProducts] = useState([]);
 
     const fetchCategoriesData = async () => {
-      const data = await fetchCategories();
-      setCategories(data);
+      //fix
+      const data1 = await fetchCategories(1);
+      const data2 = await fetchCategories(2);
+      const data3 = await fetchCategories(3);
+      allcat = [...data1, ...data2, ...data3];
+
+      setCategories(allcat);
     };
 
     useEffect(() => {
       fetchCategoriesData();
     }, []);
+
+    const handleProductPress = (product) => {
+      navigation.navigate("ProductDetail", { product });
+    };
 
     const handleCategoryPress = async (categoryId) => {
       const products = await fetchProductsByCategory(categoryId);
@@ -77,9 +102,11 @@ const Category = () => {
     );
 
     const renderProductItem = ({ item }) => (
-      <View>
-        <Text>{item.name}</Text>
-      </View>
+      <TouchableHighlight onPress={() => handleProductPress(item)}>
+        <View>
+          <Text>{item.name}</Text>
+        </View>
+      </TouchableHighlight>
     );
 
     return (
