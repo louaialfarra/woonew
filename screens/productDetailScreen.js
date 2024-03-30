@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Toast from "react-native-toast-message";
 import {
   StyleSheet,
   Text,
@@ -9,15 +8,13 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-
+import showToast from "../components/showToast";
 import store from "../src/redux/store";
 import { addToCart, selectOptionD } from "../src/redux/cartSlice";
 
 const ProductDetailScreen = ({ route }) => {
   const { product } = route.params;
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.items);
-  //const [selectedOptions, setSelectedOptions] = useState({});
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const selectedOptions = useSelector((state) => state.cart.selectedOptions);
 
@@ -60,22 +57,18 @@ const ProductDetailScreen = ({ route }) => {
     });
 
     if (existingItem) {
-      Toast.show({
-        type: "info",
-        text1: "Item Already in Cart",
-        text2: "This item is already in your cart.",
-        visibilityTime: 2000,
-        autoHide: true,
-      });
+      showToast(
+        "info",
+        "Item Already in Cart",
+        "This item is already in your cart."
+      );
     } else {
       dispatch(addToCart(itemWithAttributes));
-      Toast.show({
-        type: "success",
-        text1: "Item Added to Cart",
-        text2: "The item has been added to your cart.",
-        visibilityTime: 2000,
-        autoHide: true,
-      });
+      showToast(
+        "success",
+        "Item Added to Cart",
+        "The item has been added to your cart."
+      );
     }
   };
 

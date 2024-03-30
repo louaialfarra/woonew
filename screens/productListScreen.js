@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Toast from "react-native-toast-message";
 import {
   ActivityIndicator,
   Text,
@@ -16,6 +15,7 @@ import { addToCart, selectOption } from "../src/redux/cartSlice";
 import store from "../src/redux/store";
 import fetchProducts from "../hooks/fetch";
 import showToast from "../components/showToast";
+
 const ProductListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
