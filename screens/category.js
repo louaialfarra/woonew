@@ -1,4 +1,12 @@
-import { View, Text, FlatList, TouchableHighlight } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableHighlight,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import fetchCurrencyData from "../hooks/fetchCurrency";
 
@@ -93,13 +101,35 @@ const Category = ({ navigation }) => {
       setProducts(products);
     };
 
-    const renderCategoryItem = ({ item }) => (
-      <TouchableHighlight onPress={() => handleCategoryPress(item.id)}>
-        <View>
-          <Text>{item.name}</Text>
-        </View>
-      </TouchableHighlight>
-    );
+    const renderCategoryItem = ({ item }) => {
+      const imageSrc = item.image?.src;
+
+      return (
+        <TouchableOpacity onPress={() => handleCategoryPress(item.id)}>
+          <View style={{ marginLeft: 10, alignItems: "center" }}>
+            {imageSrc ? (
+              <Image source={{ uri: imageSrc }} style={styles.imagecontainer} />
+            ) : (
+              <View
+                style={[
+                  styles.imagecontainer,
+                  { justifyContent: "center", alignItems: "center" },
+                ]}
+              >
+                <Text
+                  style={{
+                    fontSize: 9,
+                  }}
+                >
+                  No Image Available
+                </Text>
+              </View>
+            )}
+            <Text>{item.name}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    };
 
     const renderProductItem = ({ item }) => (
       <TouchableHighlight onPress={() => handleProductPress(item)}>
@@ -116,6 +146,8 @@ const Category = ({ navigation }) => {
           data={categories}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderCategoryItem}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
         />
 
         {selectedCategory && (
@@ -141,3 +173,12 @@ const Category = ({ navigation }) => {
 };
 
 export default Category;
+const styles = StyleSheet.create({
+  imagecontainer: {
+    height: 80,
+    width: 80,
+    borderRadius: 50,
+    borderColor: "green",
+    borderWidth: 2,
+  },
+});
