@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  Button,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import fetchCurrencyData from "../hooks/fetchCurrency";
@@ -28,15 +29,21 @@ const Category = ({ navigation }) => {
         headers: {
           Authorization: `Basic ${encodedAuth}`,
         },
-        params: { page },
+        params: { page, parent: 0 },
       });
 
       const catdata = response.data;
-      return catdata;
+      const uncategorizedID = 15;
+      const filterId = catdata.filter(
+        (category) => category.id !== uncategorizedID
+      );
+      filterId.sort((a, b) => a.menu_order - b.menu_order);
+      return filterId;
     } catch (error) {
       console.error(error);
     }
   };
+
   // we can update this fetch by passing params and can normal fetch update it soon
   const fetchProductsByCategory = async (categoryId) => {
     try {
@@ -58,11 +65,37 @@ const Category = ({ navigation }) => {
           const priceInCurrency = product.price * currencyRate;
           const currency = "SYP";
 
-          return {
-            ...product,
-            priceInCurrency,
-            currency,
-          };
+          if (product.type === "variable") {
+            const variationResponse = await axios.get(
+              `${apiUrl}/products/${product.id}/variations`,
+              {
+                headers: {
+                  Authorization: `Basic ${encodedAuth}`,
+                },
+              }
+            );
+            const variations = variationResponse.data;
+            const reg = variations[0].regular_price;
+            const regularPrice = reg * currencyRate;
+
+            const sale = variations[0].sale_price;
+            const salePrice = sale * currencyRate;
+            console.log(salePrice);
+            return {
+              ...product,
+              priceInCurrency,
+              variations,
+              regularPrice,
+              salePrice,
+              currency,
+            };
+          } else {
+            return {
+              ...product,
+              priceInCurrency,
+              currency,
+            };
+          }
         })
       );
 
@@ -83,7 +116,7 @@ const Category = ({ navigation }) => {
       const data2 = await fetchCategories(2);
       const data3 = await fetchCategories(3);
       allcat = [...data1, ...data2, ...data3];
-
+      allcat.sort((a, b) => a.menu_order - b.menu_order);
       setCategories(allcat);
     };
 
@@ -131,13 +164,65 @@ const Category = ({ navigation }) => {
       );
     };
 
-    const renderProductItem = ({ item }) => (
-      <TouchableHighlight onPress={() => handleProductPress(item)}>
-        <View>
-          <Text>{item.name}</Text>
+    const renderAttributes = (item) => {
+      if (item.type === "variable") {
+        return item.attributes.map((attribute) => (
+          <View key={attribute.name}>
+            <Text>{attribute.name}:</Text>
+            <View style={styles.attributeOptions}>
+              {attribute.options.map((option) => (
+                <TouchableOpacity
+                  key={option}
+                  style={[styles.attributeOption]}
+                  onPress={() =>
+                    handleOptionSelect(item.id, attribute.name, option)
+                  }
+                >
+                  <Text>{option}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        ));
+      } else {
+        return null;
+      }
+    };
+
+    const renderProductItem = ({ item }) => {
+      const hasVariationSalePrice = item.variations.some(
+        (variation) => variation.sale_price
+      );
+
+      return (
+        <View style={styles.productItem}>
+          <TouchableOpacity onPress={() => handleProductPress(item)}>
+            {item.images?.[0]?.src ? (
+              <Image
+                source={{ uri: item.images[0].src }}
+                style={styles.productImage}
+              />
+            ) : (
+              <Text>No image available</Text>
+            )}
+
+            <Text style={styles.itemName}>{item.name}</Text>
+
+            {hasVariationSalePrice ? (
+              <Text style={styles.salePrice}>
+                Sale Price: {item.salePrice.toLocaleString()}
+              </Text>
+            ) : (
+              <Text style={styles.price}>
+                Price: {item.priceInCurrency.toLocaleString()} {item.currency}
+              </Text>
+            )}
+          </TouchableOpacity>
+          {renderAttributes(item)}
+          <Button title="Add to Cart" onPress={() => handleAddToCart(item)} />
         </View>
-      </TouchableHighlight>
-    );
+      );
+    };
 
     return (
       <View>
@@ -173,6 +258,7 @@ const Category = ({ navigation }) => {
 };
 
 export default Category;
+
 const styles = StyleSheet.create({
   imagecontainer: {
     height: 80,
@@ -180,5 +266,101 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderColor: "green",
     borderWidth: 2,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  productItem: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  cartItemContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  cartItemImage: {
+    height: 50,
+    width: 50,
+    marginRight: 10,
+  },
+
+  submitButton: {
+    backgroundColor: "blue",
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  submitButtonText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  attributeOptions: {
+    flexDirection: "row",
+    marginTop: 5,
+  },
+  attributeOption: {
+    padding: 5,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+  },
+  selectedAttributeOption: {
+    backgroundColor: "lightblue",
+  },
+  imageGallery: {
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+  productImage: {
+    width: 150,
+    height: 150,
+    marginRight: 5,
+    borderWidth: 1,
+    borderColor: "gray",
+  },
+  selectedImage: {
+    borderWidth: 2,
+    borderColor: "blue",
+  },
+  selectedProductImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "gray",
+  },
+  attributeOptions: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  attributeOption: {
+    marginRight: 10,
+    padding: 5,
+    borderWidth: 1,
+    borderColor: "gray",
+  },
+  selectedAttributeOption: {
+    borderColor: "blue",
+  },
+  itemName: {
+    fontWeight: "bold",
+  },
+  oldPrice: {
+    textDecorationLine: "line-through",
+  },
+  salePrice: {
+    color: "red",
   },
 });

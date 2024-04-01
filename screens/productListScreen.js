@@ -30,13 +30,13 @@ const ProductListScreen = ({ navigation }) => {
     try {
       //fetch 2 pages = 20 product updated by louai and copilot
       const data = await fetchProducts(page);
-      const data2 = await fetchProducts(page + 1);
-      const allProduct = [...data, ...data2];
-      if (data.allProduct === 0) {
+      //const data2 = await fetchProducts(page + 1);
+
+      if (data.length === 0) {
         setHasMoreProducts(false);
       } else {
-        setProducts((prevProducts) => [...prevProducts, ...allProduct]);
-        setPage((prevPage) => prevPage + 2);
+        setProducts((prevProducts) => [...prevProducts, ...data]);
+        setPage((prevPage) => prevPage + 1);
       }
     } catch (error) {
       console.error(error);
@@ -194,7 +194,7 @@ const ProductListScreen = ({ navigation }) => {
         numColumns={numColumns}
         columnWrapperStyle={styles.row}
         onEndReached={onEndReached}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={5}
         ListFooterComponent={
           isLoadingMore ? (
             <ActivityIndicator style={styles.loader} size="medium" />

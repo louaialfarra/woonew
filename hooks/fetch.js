@@ -21,6 +21,7 @@ const fetchProducts = async (page) => {
         Authorization: `Basic ${encodedAuth}`,
       },
       params: {
+        per_page: 20,
         page,
         status: "publish",
         orderby: "date",
