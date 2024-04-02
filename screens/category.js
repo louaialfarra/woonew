@@ -20,7 +20,7 @@ const apiKey = CONSUMER_KEY;
 const apiSecret = CONSUMER_SECRET;
 
 const Category = ({ navigation }) => {
-  const fetchCategories = async (page) => {
+  const fetchCategories = async () => {
     try {
       const authString = `${apiKey}:${apiSecret}`;
       const encodedAuth = Base64.encode(authString);
@@ -29,7 +29,7 @@ const Category = ({ navigation }) => {
         headers: {
           Authorization: `Basic ${encodedAuth}`,
         },
-        params: { page, parent: 0 },
+        params: { parent: 0, per_page: 30 },
       });
 
       const catdata = response.data;
@@ -74,6 +74,7 @@ const Category = ({ navigation }) => {
                 },
               }
             );
+
             const variations = variationResponse.data;
             const reg = variations[0].regular_price;
             const regularPrice = reg * currencyRate;
@@ -111,13 +112,10 @@ const Category = ({ navigation }) => {
     const [products, setProducts] = useState([]);
 
     const fetchCategoriesData = async () => {
-      //fix
-      const data1 = await fetchCategories(1);
-      const data2 = await fetchCategories(2);
-      const data3 = await fetchCategories(3);
-      allcat = [...data1, ...data2, ...data3];
-      allcat.sort((a, b) => a.menu_order - b.menu_order);
-      setCategories(allcat);
+      const catdata = await fetchCategories();
+
+      catdata.sort((a, b) => a.menu_order - b.menu_order);
+      setCategories(catdata);
     };
 
     useEffect(() => {
@@ -227,13 +225,15 @@ const Category = ({ navigation }) => {
     return (
       <View>
         <Text>Categories:</Text>
-        <FlatList
-          data={categories}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderCategoryItem}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        />
+        <View>
+          <FlatList
+            data={categories}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderCategoryItem}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
 
         {selectedCategory && (
           <>
@@ -242,6 +242,7 @@ const Category = ({ navigation }) => {
               data={products}
               keyExtractor={(item) => item.id.toString()}
               renderItem={renderProductItem}
+              numColumns={2}
             />
           </>
         )}

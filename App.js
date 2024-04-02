@@ -16,18 +16,10 @@ import OrderSuccess from "./screens/orderScreen";
 
 import Category from "./screens/category";
 
-import showToast from "./components/showToast";
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [cartItems, setCartItems] = useState([]);
-
-  const handleCheckout = () => {
-    // Handle the checkout logic
-  };
-
   return (
     <Provider store={store}>
       <NavigationContainer>
@@ -46,13 +38,7 @@ export default function App() {
                   component={ProductDetailScreen}
                 />
                 <Stack.Screen name="Checkout" options={{ title: "Checkout" }}>
-                  {(props) => (
-                    <Checkout
-                      {...props}
-                      cartItems={cartItems}
-                      handleCheckout={handleCheckout}
-                    />
-                  )}
+                  {(props) => <Checkout {...props} />}
                 </Stack.Screen>
                 <Stack.Screen
                   name="OrderSuccess"
@@ -63,13 +49,7 @@ export default function App() {
             )}
           </Tab.Screen>
           <Tab.Screen name="Cart">
-            {(props) => (
-              <CartScreen
-                {...props}
-                cartItems={cartItems}
-                handleCheckout={handleCheckout}
-              />
-            )}
+            {(props) => <CartScreen {...props} />}
           </Tab.Screen>
           <Tab.Screen name="Category list screen">
             {() => (
