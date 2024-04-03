@@ -38,7 +38,24 @@ const Category = ({ navigation }) => {
         (category) => category.id !== uncategorizedID
       );
       filterId.sort((a, b) => a.menu_order - b.menu_order);
-      return filterId;
+
+      // Fetch all products and add them to the empty category
+      const allProductsResponse = await axios.get(`${apiUrl}/products`, {
+        headers: {
+          Authorization: `Basic ${encodedAuth}`,
+        },
+        params: { per_page: 100 }, // Adjust per_page as needed
+      });
+
+      const allProducts = allProductsResponse.data;
+
+      // Add an empty category option and all products to the categories array
+      const categories = [
+        { id: "944846497", name: "All Products", products: allProducts },
+        ...filterId,
+      ];
+
+      return categories;
     } catch (error) {
       console.error(error);
     }
@@ -50,6 +67,7 @@ const Category = ({ navigation }) => {
       const authString = `${apiKey}:${apiSecret}`;
       const encodedAuth = Base64.encode(authString);
       const currencyRate = await fetchCurrencyData();
+
       const response = await axios.get(`${apiUrl}/products`, {
         headers: {
           Authorization: `Basic ${encodedAuth}`,
