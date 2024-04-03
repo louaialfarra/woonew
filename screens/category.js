@@ -51,7 +51,7 @@ const Category = ({ navigation }) => {
 
       // Add an empty category option and all products to the categories array
       const categories = [
-        { id: "944846497", name: "All Products", products: allProducts },
+        { id: "all", name: "All Products", products: allProducts },
         ...filterId,
       ];
 
@@ -68,13 +68,17 @@ const Category = ({ navigation }) => {
       const encodedAuth = Base64.encode(authString);
       const currencyRate = await fetchCurrencyData();
 
+      let params = { category: categoryId, per_page: 20 };
+
+      if (categoryId === "all") {
+        params.category = null;
+      }
+
       const response = await axios.get(`${apiUrl}/products`, {
         headers: {
           Authorization: `Basic ${encodedAuth}`,
         },
-        params: {
-          category: categoryId,
-        },
+        params,
       });
       const products = response.data;
 
@@ -241,9 +245,9 @@ const Category = ({ navigation }) => {
     };
 
     return (
-      <View>
-        <Text>Categories:</Text>
+      <View style={{ flex: 1 }}>
         <View>
+          <Text>Categories:</Text>
           <FlatList
             data={categories}
             keyExtractor={(item) => item.id.toString()}
@@ -252,24 +256,21 @@ const Category = ({ navigation }) => {
             showsHorizontalScrollIndicator={false}
           />
         </View>
-
-        {selectedCategory && (
-          <>
-            <Text style={{ fontSize: 50 }}>Products:</Text>
-            <FlatList
-              data={products}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={renderProductItem}
-              numColumns={2}
-            />
-          </>
-        )}
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 20 }}>Products:</Text>
+          <FlatList
+            data={products}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderProductItem}
+            numColumns={2}
+          />
+        </View>
       </View>
     );
   };
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <Text>This is the category component</Text>
       <CategoryList />
     </View>
@@ -289,10 +290,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    //alignItems: "center",
+    //justifyContent: "center",
   },
   productItem: {
+    flex: 1,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
