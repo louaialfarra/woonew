@@ -28,9 +28,7 @@ const ProductListScreen = ({ navigation }) => {
 
   const loadProducts = async () => {
     try {
-      //fetch 2 pages = 20 product updated by louai and copilot
       const data = await fetchProducts(page);
-      //const data2 = await fetchProducts(page + 1);
 
       if (data.length === 0) {
         setHasMoreProducts(false);

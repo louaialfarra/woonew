@@ -2,7 +2,6 @@ import {
   View,
   Text,
   FlatList,
-  TouchableHighlight,
   Image,
   TouchableOpacity,
   StyleSheet,
@@ -10,16 +9,26 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import fetchCurrencyData from "../hooks/fetchCurrency";
-
+import { addToCart, selectOption } from "../src/redux/cartSlice";
 import { WOO_API_URL, CONSUMER_KEY, CONSUMER_SECRET } from "@env";
 import axios from "axios";
 import Base64 from "js-base64";
-
+import { useDispatch, useSelector } from "react-redux";
+import store from "../src/redux/store";
+import showToast from "../components/showToast";
 const apiUrl = WOO_API_URL;
 const apiKey = CONSUMER_KEY;
 const apiSecret = CONSUMER_SECRET;
 
 const Category = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const selectedOptions = useSelector((store) => store.cart.selectedOptions);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMoreProducts, setHasMoreProducts] = useState(true);
+
   const fetchCategories = async () => {
     try {
       const authString = `${apiKey}:${apiSecret}`;
@@ -61,7 +70,6 @@ const Category = ({ navigation }) => {
     }
   };
 
-  // we can update this fetch by passing params and can normal fetch update it soon
   const fetchProductsByCategory = async (categoryId) => {
     try {
       const authString = `${apiKey}:${apiSecret}`;
@@ -128,151 +136,188 @@ const Category = ({ navigation }) => {
     }
   };
 
-  const CategoryList = () => {
-    const [categories, setCategories] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [products, setProducts] = useState([]);
+  const handleOptionSelect = (productId, attributeName, option) => {
+    dispatch(selectOption({ productId, attributeName, option }));
+  };
+  const fetchCategoriesData = async () => {
+    const catdata = await fetchCategories();
 
-    const fetchCategoriesData = async () => {
-      const catdata = await fetchCategories();
+    catdata.sort((a, b) => a.menu_order - b.menu_order);
+    setCategories(catdata);
+  };
 
-      catdata.sort((a, b) => a.menu_order - b.menu_order);
-      setCategories(catdata);
+  useEffect(() => {
+    fetchCategoriesData();
+  }, []);
+
+  const handleAddToCart = (product) => {
+    const selectedAttributes = product.attributes.map((attribute) => ({
+      name: attribute.name,
+      selectedOption:
+        selectedOptions[product.id]?.[attribute.name] || attribute.options[0],
+    }));
+
+    const itemWithAttributes = {
+      ...product,
+      id: product.id + "_" + JSON.stringify(selectedAttributes),
+      quantity: 1,
+      selectedAttributes,
     };
 
-    useEffect(() => {
-      fetchCategoriesData();
-    }, []);
-
-    const handleProductPress = (product) => {
-      navigation.navigate("ProductDetail", { product });
-    };
-
-    const handleCategoryPress = async (categoryId) => {
-      const products = await fetchProductsByCategory(categoryId);
-      setSelectedCategory(categoryId);
-      setProducts(products);
-    };
-
-    const renderCategoryItem = ({ item }) => {
-      const imageSrc = item.image?.src;
-
-      return (
-        <TouchableOpacity onPress={() => handleCategoryPress(item.id)}>
-          <View style={{ marginLeft: 10, alignItems: "center" }}>
-            {imageSrc ? (
-              <Image source={{ uri: imageSrc }} style={styles.imagecontainer} />
-            ) : (
-              <View
-                style={[
-                  styles.imagecontainer,
-                  { justifyContent: "center", alignItems: "center" },
-                ]}
-              >
-                <Text
-                  style={{
-                    fontSize: 9,
-                  }}
-                >
-                  No Image Available
-                </Text>
-              </View>
-            )}
-            <Text>{item.name}</Text>
-          </View>
-        </TouchableOpacity>
-      );
-    };
-
-    const renderAttributes = (item) => {
-      if (item.type === "variable") {
-        return item.attributes.map((attribute) => (
-          <View key={attribute.name}>
-            <Text>{attribute.name}:</Text>
-            <View style={styles.attributeOptions}>
-              {attribute.options.map((option) => (
-                <TouchableOpacity
-                  key={option}
-                  style={[styles.attributeOption]}
-                  onPress={() =>
-                    handleOptionSelect(item.id, attribute.name, option)
-                  }
-                >
-                  <Text>{option}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        ));
-      } else {
-        return null;
+    const existingItem = store.getState().cart.items.find((item) => {
+      if (item.id === itemWithAttributes.id) {
+        return (
+          item.selectedAttributes.length ===
+            itemWithAttributes.selectedAttributes.length &&
+          item.selectedAttributes.every((itemAttr) => {
+            const correspondingAttr =
+              itemWithAttributes.selectedAttributes.find(
+                (attr) => attr.name === itemAttr.name
+              );
+            return correspondingAttr.selectedOption === itemAttr.selectedOption;
+          })
+        );
       }
-    };
+      return false;
+    });
 
-    const renderProductItem = ({ item }) => {
-      const hasVariationSalePrice = item.variations.some(
-        (variation) => variation.sale_price
+    if (existingItem) {
+      showToast(
+        "info",
+        "Item Already in Cart",
+        "This item is already in your cart."
       );
-
-      return (
-        <View style={styles.productItem}>
-          <TouchableOpacity onPress={() => handleProductPress(item)}>
-            {item.images?.[0]?.src ? (
-              <Image
-                source={{ uri: item.images[0].src }}
-                style={styles.productImage}
-              />
-            ) : (
-              <Text>No image available</Text>
-            )}
-
-            <Text style={styles.itemName}>{item.name}</Text>
-
-            {hasVariationSalePrice ? (
-              <Text style={styles.salePrice}>
-                Sale Price: {item.salePrice.toLocaleString()}
-              </Text>
-            ) : (
-              <Text style={styles.price}>
-                Price: {item.priceInCurrency.toLocaleString()} {item.currency}
-              </Text>
-            )}
-          </TouchableOpacity>
-          {renderAttributes(item)}
-          <Button title="Add to Cart" onPress={() => handleAddToCart(item)} />
-        </View>
+    } else {
+      dispatch(addToCart(itemWithAttributes));
+      showToast(
+        "success",
+        "Item Added to Cart",
+        "The item has been added to your cart."
       );
-    };
+    }
+  };
+
+  const handleProductPress = (product) => {
+    navigation.navigate("ProductDetail", { product });
+  };
+
+  const handleCategoryPress = async (categoryId) => {
+    const products = await fetchProductsByCategory(categoryId);
+    setSelectedCategory(categoryId);
+    setProducts(products);
+  };
+
+  const renderCategoryItem = ({ item }) => {
+    const imageSrc = item.image?.src;
 
     return (
-      <View style={{ flex: 1 }}>
-        <View>
-          <Text>Categories:</Text>
-          <FlatList
-            data={categories}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderCategoryItem}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-          />
+      <TouchableOpacity onPress={() => handleCategoryPress(item.id)}>
+        <View style={{ marginLeft: 10, alignItems: "center" }}>
+          {imageSrc ? (
+            <Image source={{ uri: imageSrc }} style={styles.imagecontainer} />
+          ) : (
+            <View
+              style={[
+                styles.imagecontainer,
+                { justifyContent: "center", alignItems: "center" },
+              ]}
+            >
+              <Text
+                style={{
+                  fontSize: 9,
+                }}
+              >
+                No Image Available
+              </Text>
+            </View>
+          )}
+          <Text>{item.name}</Text>
         </View>
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 20 }}>Products:</Text>
-          <FlatList
-            data={products}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderProductItem}
-            numColumns={2}
-          />
+      </TouchableOpacity>
+    );
+  };
+
+  const renderAttributes = (item) => {
+    if (item.type === "variable") {
+      return item.attributes.map((attribute) => (
+        <View key={attribute.name}>
+          <Text>{attribute.name}:</Text>
+          <View style={styles.attributeOptions}>
+            {attribute.options.map((option) => (
+              <TouchableOpacity
+                key={option}
+                style={[styles.attributeOption]}
+                onPress={() =>
+                  handleOptionSelect(item.id, attribute.name, option)
+                }
+              >
+                <Text>{option}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
+      ));
+    } else {
+      return null;
+    }
+  };
+
+  const renderProductItem = ({ item }) => {
+    const hasVariationSalePrice = item.variations.some(
+      (variation) => variation.sale_price
+    );
+
+    return (
+      <View style={styles.productItem}>
+        <TouchableOpacity onPress={() => handleProductPress(item)}>
+          {item.images?.[0]?.src ? (
+            <Image
+              source={{ uri: item.images[0].src }}
+              style={styles.productImage}
+            />
+          ) : (
+            <Text>No image available</Text>
+          )}
+
+          <Text style={styles.itemName}>{item.name}</Text>
+
+          {hasVariationSalePrice ? (
+            <Text style={styles.salePrice}>
+              Sale Price: {item.salePrice.toLocaleString()}
+            </Text>
+          ) : (
+            <Text style={styles.price}>
+              Price: {item.priceInCurrency.toLocaleString()} {item.currency}
+            </Text>
+          )}
+        </TouchableOpacity>
+        {renderAttributes(item)}
+        <Button title="Add to Cart" onPress={() => handleAddToCart(item)} />
       </View>
     );
   };
 
   return (
     <View style={{ flex: 1 }}>
-      <Text>This is the category component</Text>
-      <CategoryList />
+      <View>
+        <Text>Categories:</Text>
+        <FlatList
+          data={categories}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderCategoryItem}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontSize: 20 }}>Products:</Text>
+        <FlatList
+          data={products}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderProductItem}
+          numColumns={2}
+        />
+      </View>
     </View>
   );
 };
