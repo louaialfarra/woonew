@@ -225,9 +225,8 @@ const Category = ({ navigation }) => {
             ) : (
               <Text>No image available</Text>
             )}
-
+            sss
             <Text style={styles.itemName}>{item.name}</Text>
-
             {hasVariationSalePrice ? (
               <Text style={styles.salePrice}>
                 Sale Price: {item.salePrice.toLocaleString()}
