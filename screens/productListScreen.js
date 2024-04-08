@@ -192,7 +192,7 @@ const ProductListScreen = ({ navigation }) => {
         numColumns={numColumns}
         columnWrapperStyle={styles.row}
         onEndReached={onEndReached}
-        onEndReachedThreshold={5}
+        onEndReachedThreshold={0.5}
         ListFooterComponent={
           isLoadingMore ? (
             <ActivityIndicator style={styles.loader} size="medium" />

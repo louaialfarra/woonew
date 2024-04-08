@@ -28,7 +28,7 @@ const Category = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
-
+  const [page, setPage] = useState(1);
   const fetchCategories = async () => {
     try {
       const authString = `${apiKey}:${apiSecret}`;
@@ -69,14 +69,20 @@ const Category = ({ navigation }) => {
       console.error(error);
     }
   };
+  const fetchCategoriesData = async () => {
+    const catdata = await fetchCategories();
 
-  const fetchProductsByCategory = async (categoryId) => {
+    catdata.sort((a, b) => a.menu_order - b.menu_order);
+    setCategories(catdata);
+  };
+
+  const fetchProductsByCategory = async (categoryId, page) => {
     try {
       const authString = `${apiKey}:${apiSecret}`;
       const encodedAuth = Base64.encode(authString);
       const currencyRate = await fetchCurrencyData();
 
-      let params = { category: categoryId, per_page: 20 };
+      let params = { category: categoryId, per_page: 20, page };
 
       if (categoryId === "all") {
         params.category = null;
@@ -139,12 +145,6 @@ const Category = ({ navigation }) => {
   const handleOptionSelect = (productId, attributeName, option) => {
     dispatch(selectOption({ productId, attributeName, option }));
   };
-  const fetchCategoriesData = async () => {
-    const catdata = await fetchCategories();
-
-    catdata.sort((a, b) => a.menu_order - b.menu_order);
-    setCategories(catdata);
-  };
 
   useEffect(() => {
     fetchCategoriesData();
@@ -200,11 +200,37 @@ const Category = ({ navigation }) => {
   const handleProductPress = (product) => {
     navigation.navigate("ProductDetail", { product });
   };
+  const loadMore = async () => {
+    try {
+      const nextPage = page + 1;
+      const products = await fetchProductsByCategory(
+        selectedCategory,
+        nextPage
+      );
+      if (products.length === 0) {
+        setHasMoreProducts(false);
+      }
+      setProducts((prevProducts) => [...prevProducts, ...products]);
+      setPage(nextPage);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    if (hasMoreProducts) {
+      const fetchProducts = async () => {
+        const products = await fetchProductsByCategory(selectedCategory, page);
+        setProducts(products);
+      };
+
+      fetchProducts();
+    }
+  }, [selectedCategory, page]);
 
   const handleCategoryPress = async (categoryId) => {
-    const products = await fetchProductsByCategory(categoryId);
     setSelectedCategory(categoryId);
-    setProducts(products);
+    setPage(1);
+    setHasMoreProducts(true);
   };
 
   const renderCategoryItem = ({ item }) => {
@@ -316,6 +342,8 @@ const Category = ({ navigation }) => {
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderProductItem}
           numColumns={2}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.5}
         />
       </View>
     </View>
