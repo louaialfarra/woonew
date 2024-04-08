@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import fetchCurrencyData from "../hooks/fetchCurrency";
@@ -29,6 +30,8 @@ const Category = ({ navigation }) => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
   const [page, setPage] = useState(1);
+  //const [test, setTest] = useState(false);
+
   const fetchCategories = async () => {
     try {
       const authString = `${apiKey}:${apiSecret}`;
@@ -69,6 +72,7 @@ const Category = ({ navigation }) => {
       console.error(error);
     }
   };
+
   const fetchCategoriesData = async () => {
     const catdata = await fetchCategories();
 
@@ -207,9 +211,11 @@ const Category = ({ navigation }) => {
         selectedCategory,
         nextPage
       );
+
       if (products.length === 0) {
         setHasMoreProducts(false);
       }
+
       setProducts((prevProducts) => [...prevProducts, ...products]);
       setPage(nextPage);
     } catch (error) {
@@ -225,7 +231,18 @@ const Category = ({ navigation }) => {
 
       fetchProducts();
     }
-  }, [selectedCategory, page]);
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    if (isLoadingMore && hasMoreProducts) {
+      loadMore()
+        .then(() => setIsLoadingMore(false))
+        .catch((error) => {
+          console.error(error);
+          setIsLoadingMore(false);
+        });
+    }
+  }, [isLoadingMore, hasMoreProducts]);
 
   const handleCategoryPress = async (categoryId) => {
     setSelectedCategory(categoryId);
@@ -322,7 +339,17 @@ const Category = ({ navigation }) => {
       </View>
     );
   };
-
+  const handleLoadMore = () => {
+    if (!isLoadingMore && hasMoreProducts) {
+      setIsLoadingMore(true);
+    }
+  };
+  // here  it is changeung the value on the isl oading more  b calling hamdle more we shuold take care of it
+  const onEndReached = () => {
+    if (!isLoadingMore && hasMoreProducts) {
+      handleLoadMore();
+    }
+  };
   return (
     <View style={{ flex: 1 }}>
       <View>
@@ -342,8 +369,15 @@ const Category = ({ navigation }) => {
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderProductItem}
           numColumns={2}
-          onEndReached={loadMore}
+          onEndReached={onEndReached}
           onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isLoadingMore ? (
+              <ActivityIndicator style={styles.loader} size="medium" />
+            ) : hasMoreProducts ? (
+              <Button title="Load More" onPress={handleLoadMore} />
+            ) : null
+          }
         />
       </View>
     </View>
