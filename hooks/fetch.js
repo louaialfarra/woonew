@@ -3,19 +3,18 @@ import axios from "axios";
 import Base64 from "js-base64";
 
 import fetchCurrencyData from "../hooks/fetchCurrency";
-// end of redux
+
 const apiUrl = WOO_API_URL;
 const apiKey = CONSUMER_KEY;
 const apiSecret = CONSUMER_SECRET;
 
-const fetchProducts = async (page) => {
+const fetchProducts = async (page, search) => {
   try {
     const currencyRate = await fetchCurrencyData();
 
     const authString = `${apiKey}:${apiSecret}`;
     const encodedAuth = Base64.encode(authString);
 
-    // Modify the API URL to include the page parameter for pagination
     const response = await axios.get(`${apiUrl}/products`, {
       headers: {
         Authorization: `Basic ${encodedAuth}`,
@@ -26,6 +25,7 @@ const fetchProducts = async (page) => {
         status: "publish",
         orderby: "date",
         order: "desc",
+        search,
       },
     });
 

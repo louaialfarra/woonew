@@ -5,7 +5,6 @@ import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-
 import store from "./src/redux/store";
 
 import ProductListScreen from "./screens/productListScreen";
@@ -25,7 +24,19 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Tab.Navigator>
-          <Tab.Screen name="Search" component={SearchScreen}></Tab.Screen>
+          <Tab.Screen name="Search">
+            {() => (
+              <Stack.Navigator>
+                <Stack.Screen name="search">
+                  {(props) => <SearchScreen {...props} />}
+                </Stack.Screen>
+                <Stack.Screen
+                  name="ProductDetail"
+                  component={ProductDetailScreen}
+                />
+              </Stack.Navigator>
+            )}
+          </Tab.Screen>
 
           <Tab.Screen name="Product List">
             {() => (
@@ -179,5 +190,3 @@ export default function App() {
     color: "red",
   },
 });*/
-
-//fix product is fetch draft  adn th sort of the products
