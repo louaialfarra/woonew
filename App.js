@@ -24,169 +24,50 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Tab.Navigator>
-          <Tab.Screen name="Search">
-            {() => (
-              <Stack.Navigator>
-                <Stack.Screen name="search">
-                  {(props) => <SearchScreen {...props} />}
-                </Stack.Screen>
-                <Stack.Screen
-                  name="ProductDetail"
-                  component={ProductDetailScreen}
-                />
-              </Stack.Navigator>
-            )}
-          </Tab.Screen>
-
-          <Tab.Screen name="Product List">
-            {() => (
-              <Stack.Navigator>
-                <Stack.Screen
-                  name="ProductListScreen"
-                  options={{ headerShown: false }}
-                >
-                  {(props) => <ProductListScreen {...props} />}
-                </Stack.Screen>
-                <Stack.Screen
-                  name="ProductDetail"
-                  component={ProductDetailScreen}
-                />
-                <Stack.Screen name="Checkout" options={{ title: "Checkout" }}>
-                  {(props) => <Checkout {...props} />}
-                </Stack.Screen>
-                <Stack.Screen
-                  name="OrderSuccess"
-                  options={{ title: "Order Success" }}
-                  component={OrderSuccess}
-                />
-              </Stack.Navigator>
-            )}
-          </Tab.Screen>
-          <Tab.Screen name="Cart">
-            {(props) => <CartScreen {...props} />}
-          </Tab.Screen>
-          <Tab.Screen name="Category list screen">
-            {() => (
-              <Stack.Navigator>
-                <Stack.Screen name="category" options={{ headerShown: false }}>
-                  {(props) => <Category {...props} />}
-                </Stack.Screen>
-                <Stack.Screen
-                  name="ProductDetail"
-                  component={ProductDetailScreen}
-                />
-              </Stack.Navigator>
-            )}
-          </Tab.Screen>
+          <Tab.Screen name="Searchname" component={SearchStackScreen} />
+          <Tab.Screen name="Product List" component={ProductListStackScreen} />
+          <Tab.Screen name="Cart" component={CartScreen} />
+          <Tab.Screen
+            name="Category List Screen"
+            component={CategoryListStack}
+          />
         </Tab.Navigator>
       </NavigationContainer>
       <Toast />
     </Provider>
   );
 }
+function SearchStackScreen() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Search" component={SearchScreen} />
+      <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
+    </Stack.Navigator>
+  );
+}
+function ProductListStackScreen() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="ProductList">
+        {(props) => <ProductListScreen {...props} />}
+      </Stack.Screen>
+      <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
 
-/*const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  productItem: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-  cartItemContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-  cartItemImage: {
-    height: 50,
-    width: 50,
-    marginRight: 10,
-  },
-  input: {
-    height: 40,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  submitButton: {
-    backgroundColor: "blue",
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  submitButtonText: {
-    color: "white",
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  attributeOptions: {
-    flexDirection: "row",
-    marginTop: 5,
-  },
-  attributeOption: {
-    padding: 5,
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-  },
-  selectedAttributeOption: {
-    backgroundColor: "lightblue",
-  },
-  imageGallery: {
-    flexDirection: "row",
-    marginBottom: 20,
-  },
-  productImage: {
-    width: 150,
-    height: 150,
-    marginRight: 5,
-    borderWidth: 1,
-    borderColor: "gray",
-  },
-  selectedImage: {
-    borderWidth: 2,
-    borderColor: "blue",
-  },
-  selectedProductImage: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "gray",
-  },
-  attributeOptions: {
-    flexDirection: "row",
-    marginBottom: 10,
-  },
-  attributeOption: {
-    marginRight: 10,
-    padding: 5,
-    borderWidth: 1,
-    borderColor: "gray",
-  },
-  selectedAttributeOption: {
-    borderColor: "blue",
-  },
-  itemName: {
-    fontWeight: "bold",
-  },
-  oldPrice: {
-    textDecorationLine: "line-through",
-  },
-  salePrice: {
-    color: "red",
-  },
-});*/
+      <Stack.Screen name="Checkout">
+        {(props) => <Checkout {...props} />}
+      </Stack.Screen>
+
+      <Stack.Screen name="OrderSuccess" component={OrderSuccess} />
+    </Stack.Navigator>
+  );
+}
+function CategoryListStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="category">
+        {(props) => <Category {...props} />}
+      </Stack.Screen>
+      <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
+    </Stack.Navigator>
+  );
+}
