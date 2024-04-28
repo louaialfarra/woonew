@@ -13,6 +13,7 @@ import ProductDetailScreen from "./screens/productDetailScreen";
 import CartScreen from "./screens/cartScreen";
 import Checkout from "./screens/checkoutScreen";
 import OrderSuccess from "./screens/orderScreen";
+import HomePage from "./screens/homePage";
 
 import Category from "./screens/category";
 import SearchScreen from "./screens/searchScreen";
@@ -41,7 +42,7 @@ export default function App() {
             headerRight: () => <SearchButton />,
           }}
         >
-          <Tab.Screen name="Searchname" component={SearchStackScreen} />
+          <Tab.Screen name="Home" component={HomePage} />
           <Tab.Screen name="Product List" component={ProductListStackScreen} />
           <Tab.Screen name="Cart" component={CartScreen} />
           <Tab.Screen
@@ -54,14 +55,7 @@ export default function App() {
     </Provider>
   );
 }
-function SearchStackScreen() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Search" component={SearchScreen} />
-      <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
-    </Stack.Navigator>
-  );
-}
+
 function ProductListStackScreen() {
   return (
     <Stack.Navigator>
@@ -75,6 +69,7 @@ function ProductListStackScreen() {
       </Stack.Screen>
 
       <Stack.Screen name="OrderSuccess" component={OrderSuccess} />
+      <Stack.Screen name="Search" component={SearchScreen} />
     </Stack.Navigator>
   );
 }
@@ -85,6 +80,7 @@ function CategoryListStack() {
         {(props) => <Category {...props} />}
       </Stack.Screen>
       <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
+      <Stack.Screen name="Search" component={SearchScreen} />
     </Stack.Navigator>
   );
 }
