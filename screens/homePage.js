@@ -1,26 +1,36 @@
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, Image } from "react-native";
 import Carousel from "react-native-snap-carousel";
+import IMAGES from "../assets/src/images";
 
 const HomePage = () => {
   const data = [
     {
       id: 1,
       title: "this is titile bu louai",
-      descrption: "this is dexcrption",
+      descrption: "desc1",
+      image: IMAGES.SALE,
     },
     {
       id: 2,
-      title: "this is titile bu louai",
-      descrption: "this is dexcrption",
-    },
-    {
-      id: 3,
-      title: "this is titile bu louai",
-      descrption: "this is dexcrption",
+      title: "Men collection",
+      descrption: "des2",
+      image: IMAGES.MEN,
     },
   ];
   _renderItem = ({ item }) => {
-    return <Text>{item.title}</Text>;
+    return (
+      <View>
+        <Image
+          source={item.image}
+          style={{
+            height: 170,
+            width: Dimensions.get("window").width,
+            resizeMode: "cover",
+          }}
+        />
+        <Text>{item.title}</Text>
+      </View>
+    );
   };
   return (
     <View>
@@ -34,4 +44,7 @@ const HomePage = () => {
     </View>
   );
 };
+// this is to  fix error in carousle  snap
+HomePage.propTypes = {};
+
 export default HomePage;
