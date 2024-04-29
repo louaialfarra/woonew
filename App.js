@@ -18,40 +18,46 @@ import HomePage from "./screens/homePage";
 import Category from "./screens/category";
 import SearchScreen from "./screens/searchScreen";
 import { Feather } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={{
-            headerTitleAlign: "center",
-            headerStyle: { backgroundColor: "black", height: 120 },
-            headerTitleStyle: { fontWeight: "bold" },
-            //headerTitle: "Hooboo" for text
-            headerTitle: () => (
-              <View style={{ alignItems: "center" }}>
-                <Image
-                  source={require("./assets/logo/hooboo_logo.png")}
-                  style={{ height: 50, resizeMode: "contain" }}
-                />
-              </View>
-            ),
-            headerRight: () => <SearchButton />,
-          }}
-        >
-          <Tab.Screen name="Home" component={HomePage} />
-          <Tab.Screen name="Product List" component={ProductListStackScreen} />
-          <Tab.Screen name="Cart" component={CartScreen} />
-          <Tab.Screen
-            name="Category List Screen"
-            component={CategoryListStack}
-          />
-        </Tab.Navigator>
-      </NavigationContainer>
-      <Toast />
+      <SafeAreaView style={{ flex: 1, backgroundColor: "gray" }}>
+        <NavigationContainer>
+          <Tab.Navigator
+            screenOptions={{
+              headerTitleAlign: "center",
+              headerStyle: { backgroundColor: "black", height: 120 },
+              headerTitleStyle: { fontWeight: "bold" },
+              //headerTitle: "Hooboo" for text
+              headerTitle: () => (
+                <View style={{ alignItems: "center" }}>
+                  <Image
+                    source={require("./assets/logo/hooboo_logo.png")}
+                    style={{ height: 50, resizeMode: "contain" }}
+                  />
+                </View>
+              ),
+              headerRight: () => <SearchButton />,
+            }}
+          >
+            <Tab.Screen name="Home" component={HomePage} />
+            <Tab.Screen
+              name="Product List"
+              component={ProductListStackScreen}
+            />
+            <Tab.Screen name="Cart" component={CartScreen} />
+            <Tab.Screen
+              name="Category List Screen"
+              component={CategoryListStack}
+            />
+          </Tab.Navigator>
+        </NavigationContainer>
+        <Toast />
+      </SafeAreaView>
     </Provider>
   );
 }

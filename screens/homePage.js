@@ -1,8 +1,13 @@
-import { View, Text, Dimensions, Image } from "react-native";
-import Carousel from "react-native-snap-carousel";
+import { View, Text, Dimensions, Image, TouchableOpacity } from "react-native";
+import Carousel, { Pagination } from "react-native-snap-carousel";
 import IMAGES from "../assets/src/images";
+import { useRef, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const HomePage = () => {
+  const navigation = useNavigation();
+  const _carousel = useRef();
+  const [activeDotIndex, setActiveDotIndex] = useState(0);
   const data = [
     {
       id: 1,
@@ -16,35 +21,60 @@ const HomePage = () => {
       descrption: "des2",
       image: IMAGES.MEN,
     },
+    {
+      id: 3,
+      title: "Men collection",
+      descrption: "des2",
+      image: IMAGES.MEN,
+    },
   ];
+  const handlePressItem = (item) => {};
   _renderItem = ({ item }) => {
     return (
-      <View>
-        <Image
-          source={item.image}
-          style={{
-            height: 170,
-            width: Dimensions.get("window").width,
-            resizeMode: "cover",
-          }}
-        />
-        <Text>{item.title}</Text>
-      </View>
+      <TouchableOpacity>
+        <View style={{ alignItems: "center" }}>
+          <Image
+            source={item.image}
+            style={{
+              alignItems: "center",
+              height: 170,
+              width: Dimensions.get("window").width - 50,
+              resizeMode: "cover",
+            }}
+          />
+          <Text>{item.title}</Text>
+        </View>
+      </TouchableOpacity>
     );
   };
   return (
-    <View>
+    <View style={{ marginTop: 10 }}>
       <Carousel
         data={data}
+        ref={_carousel}
         renderItem={_renderItem}
         sliderWidth={Dimensions.get("window").width}
-        itemWidth={Dimensions.get("window").width}
+        itemWidth={Dimensions.get("window").width - 50}
+        onSnapToItem={(index) => setActiveDotIndex(index)}
       />
+      <Pagination
+        activeDotIndex={activeDotIndex}
+        dotsLength={3}
+        carouselRef={_carousel}
+        tappableDots={true}
+        dotStyle={{
+          width: 15,
+          backgroundColor: "orange",
+        }}
+        inactiveDotStyle={{
+          width: 10,
+          backgroundColor: "gray",
+        }}
+      />
+      <Text>this is homepage</Text>
       <Text>this is homepage</Text>
     </View>
   );
 };
-// this is to  fix error in carousle  snap
-HomePage.propTypes = {};
 
 export default HomePage;
