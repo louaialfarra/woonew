@@ -28,10 +28,14 @@ const HomePage = () => {
       image: IMAGES.MEN,
     },
   ];
-  const handlePressItem = (item) => {};
-  _renderItem = ({ item }) => {
+  const handleItemPress = (index) => {
+    if (index === 1) {
+      navigation.navigate("Cart");
+    }
+  };
+  _renderItem = ({ item, index }) => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity activeOpacity={1} onPress={handleItemPress(index)}>
         <View style={{ alignItems: "center" }}>
           <Image
             source={item.image}
