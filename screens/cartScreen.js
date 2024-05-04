@@ -13,12 +13,15 @@ import {
   incrementQuantity,
   decrementQuantity,
   removeCartItem,
+  updatedRate,
 } from "../src/redux/cartSlice";
 
 const CartScreen = ({ navigation }) => {
+  const currency = useSelector((state) => state.cart.currencyRate);
   const cartItems = useSelector((state) => state.cart.items);
   const quantityMap = useSelector((state) => state.cart.quantityMap);
   const dispatch = useDispatch();
+  console.log(currency + "this is curency cart");
 
   const handleCheckout = () => {
     const updatedCartItems = cartItems.map((item) => {

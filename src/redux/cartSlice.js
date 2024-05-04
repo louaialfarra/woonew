@@ -4,12 +4,17 @@ const initialState = {
   items: [],
   quantityMap: {},
   selectedOptions: {},
+  currencyRate: {},
 };
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    updatedRate: (state, action) => {
+      const rate = action.payload;
+      state.currencyRate = rate;
+    },
     addToCart: (state, action) => {
       const product = action.payload;
       const existingItem = state.items.find((item) => item.id === product.id);
@@ -71,6 +76,7 @@ export const {
   removeCartItem,
   selectOption,
   selectOptionD,
+  updatedRate,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

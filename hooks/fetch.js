@@ -3,7 +3,6 @@ import axios from "axios";
 import Base64 from "js-base64";
 
 import fetchCurrencyData from "../hooks/fetchCurrency";
-
 const apiUrl = WOO_API_URL;
 const apiKey = CONSUMER_KEY;
 const apiSecret = CONSUMER_SECRET;
@@ -36,8 +35,7 @@ const fetchProducts = async (page, search) => {
       products.map(async (product) => {
         const priceInCurrency = product.price * currencyRate;
         const currency = "SYP";
-        // fetch the price if it is variable cause its not showing in the normal  fetch
-        //aslo fetch the sale price
+
         if (product.type === "variable") {
           const variationResponse = await axios.get(
             `${apiUrl}/products/${product.id}/variations`,

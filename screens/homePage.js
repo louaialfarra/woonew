@@ -11,20 +11,35 @@ import Carousel, { Pagination } from "react-native-snap-carousel";
 import IMAGES from "../assets/src/images";
 import { useRef, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 
 import { WOO_API_URL, CONSUMER_KEY, CONSUMER_SECRET } from "@env";
 import axios from "axios";
 import Base64 from "js-base64";
-
+import fetchCurrencyData from "../hooks/fetchCurrency";
+import { updatedRate } from "../src/redux/cartSlice";
 const apiUrl = WOO_API_URL;
 const apiKey = CONSUMER_KEY;
 const apiSecret = CONSUMER_SECRET;
 
 const HomePage = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const _carousel = useRef();
   const [activeDotIndex, setActiveDotIndex] = useState(0);
   const [newProduct, setNewProduct] = useState([]);
+  const [rate, setRate] = useState();
+
+  const getrate = async () => {
+    try {
+      const rate = await fetchCurrencyData();
+      dispatch(updatedRate(rate));
+      setRate(rate);
+      console.log(rate + "this is home rate");
+    } catch {}
+  };
+  getrate();
+  //console.log(rate + "thsi is rate home");
 
   const data = [
     {
@@ -47,6 +62,7 @@ const HomePage = () => {
     },
   ];
   const handleItemPress = () => {};
+
   _renderItem = ({ item, index }) => {
     return (
       <TouchableOpacity activeOpacity={1} onPress={handleItemPress(index)}>
@@ -124,7 +140,7 @@ const HomePage = () => {
                       borderRadius: 5,
                     }}
                   />
-                  <Text> PRICE {item.price}</Text>
+                  <Text> PRICE {(item.price * rate).toLocaleString()}</Text>
                   <View style={{}}>
                     <Image
                       source={{ uri: item.images[0].src }}
