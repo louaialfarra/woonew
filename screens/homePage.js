@@ -1,13 +1,31 @@
-import { View, Text, Dimensions, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  ScrollView,
+} from "react-native";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import IMAGES from "../assets/src/images";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+
+import { WOO_API_URL, CONSUMER_KEY, CONSUMER_SECRET } from "@env";
+import axios from "axios";
+import Base64 from "js-base64";
+
+const apiUrl = WOO_API_URL;
+const apiKey = CONSUMER_KEY;
+const apiSecret = CONSUMER_SECRET;
 
 const HomePage = () => {
   const navigation = useNavigation();
   const _carousel = useRef();
   const [activeDotIndex, setActiveDotIndex] = useState(0);
+  const [newProduct, setNewProduct] = useState([]);
+
   const data = [
     {
       id: 1,
@@ -28,11 +46,7 @@ const HomePage = () => {
       image: IMAGES.MEN,
     },
   ];
-  const handleItemPress = (index) => {
-    if (index === 1) {
-      navigation.navigate("Cart");
-    }
-  };
+  const handleItemPress = () => {};
   _renderItem = ({ item, index }) => {
     return (
       <TouchableOpacity activeOpacity={1} onPress={handleItemPress(index)}>
@@ -51,33 +65,107 @@ const HomePage = () => {
       </TouchableOpacity>
     );
   };
+  useEffect(() => {
+    const fetchProduts = async () => {
+      try {
+        const authString = `${apiKey}:${apiSecret}`;
+        const encodedAuth = Base64.encode(authString);
+        const response = await axios.get(`${apiUrl}/products`, {
+          headers: { Authorization: `Basic ${encodedAuth}` },
+        });
+        setNewProduct(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProduts();
+  }, []);
   return (
-    <View style={{ marginTop: 10 }}>
-      <Carousel
-        data={data}
-        ref={_carousel}
-        renderItem={_renderItem}
-        sliderWidth={Dimensions.get("window").width}
-        itemWidth={Dimensions.get("window").width - 50}
-        onSnapToItem={(index) => setActiveDotIndex(index)}
-      />
-      <Pagination
-        activeDotIndex={activeDotIndex}
-        dotsLength={3}
-        carouselRef={_carousel}
-        tappableDots={true}
-        dotStyle={{
-          width: 15,
-          backgroundColor: "orange",
-        }}
-        inactiveDotStyle={{
-          width: 10,
-          backgroundColor: "gray",
-        }}
-      />
-      <Text>this is homepage</Text>
-      <Text>this is homepage</Text>
-    </View>
+    <ScrollView>
+      <View style={{ marginTop: 10, flex: 1 }}>
+        <View>
+          <Carousel
+            data={data}
+            ref={_carousel}
+            renderItem={_renderItem}
+            sliderWidth={Dimensions.get("window").width}
+            itemWidth={Dimensions.get("window").width - 50}
+            onSnapToItem={(index) => setActiveDotIndex(index)}
+          />
+          <Pagination
+            activeDotIndex={activeDotIndex}
+            dotsLength={3}
+            carouselRef={_carousel}
+            tappableDots={true}
+            dotStyle={{
+              width: 15,
+              backgroundColor: "orange",
+            }}
+            inactiveDotStyle={{
+              width: 10,
+              backgroundColor: "gray",
+            }}
+          />
+        </View>
+        <Text>this is homepage</Text>
+        <Text>this is homepage</Text>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <FlatList
+            horizontal={true}
+            data={newProduct}
+            renderItem={({ item }) => {
+              return (
+                <View style={{ paddingHorizontal: 10 }}>
+                  <Image
+                    source={{ uri: item.images[0].src }}
+                    style={{
+                      height: 150,
+                      width: 150,
+                      borderRadius: 5,
+                    }}
+                  />
+                  <Text> PRICE {item.price}</Text>
+                  <View style={{}}>
+                    <Image
+                      source={{ uri: item.images[0].src }}
+                      style={{
+                        height: 150,
+                        width: 150,
+                        borderRadius: 5,
+                      }}
+                    />
+                    <Text> PRICE {item.price}</Text>
+                  </View>
+                  <View style={{}}>
+                    <Image
+                      source={{ uri: item.images[0].src }}
+                      style={{
+                        height: 150,
+                        width: 150,
+                        borderRadius: 5,
+                      }}
+                    />
+                    <Text> PRICE {item.price}</Text>
+                  </View>
+                  <View style={{}}>
+                    <Image
+                      source={{ uri: item.images[0].src }}
+                      style={{
+                        height: 150,
+                        width: 150,
+                        borderRadius: 5,
+                      }}
+                    />
+                    <Text> PRICE {item.price}</Text>
+                  </View>
+                </View>
+              );
+            }}
+          />
+        </View>
+        <Text>test</Text>
+      </View>
+    </ScrollView>
   );
 };
 
