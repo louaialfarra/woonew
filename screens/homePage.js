@@ -62,6 +62,9 @@ const HomePage = () => {
     },
   ];
   const handleItemPress = () => {};
+  const handleProductPress = (product) => {
+    navigation.navigate("newProduct", { product });
+  };
 
   _renderItem = ({ item, index }) => {
     return (
@@ -132,16 +135,7 @@ const HomePage = () => {
             renderItem={({ item }) => {
               return (
                 <View style={{ paddingHorizontal: 10 }}>
-                  <Image
-                    source={{ uri: item.images[0].src }}
-                    style={{
-                      height: 150,
-                      width: 150,
-                      borderRadius: 5,
-                    }}
-                  />
-                  <Text> PRICE {(item.price * rate).toLocaleString()}</Text>
-                  <View style={{}}>
+                  <TouchableOpacity onPress={() => handleProductPress(item)}>
                     <Image
                       source={{ uri: item.images[0].src }}
                       style={{
@@ -150,30 +144,9 @@ const HomePage = () => {
                         borderRadius: 5,
                       }}
                     />
-                    <Text> PRICE {item.price}</Text>
-                  </View>
-                  <View style={{}}>
-                    <Image
-                      source={{ uri: item.images[0].src }}
-                      style={{
-                        height: 150,
-                        width: 150,
-                        borderRadius: 5,
-                      }}
-                    />
-                    <Text> PRICE {item.price}</Text>
-                  </View>
-                  <View style={{}}>
-                    <Image
-                      source={{ uri: item.images[0].src }}
-                      style={{
-                        height: 150,
-                        width: 150,
-                        borderRadius: 5,
-                      }}
-                    />
-                    <Text> PRICE {item.price}</Text>
-                  </View>
+                    <Text> PRICE {(item.price * rate).toLocaleString()}</Text>
+                  </TouchableOpacity>
+                  <Text> PRICE {item.price}</Text>
                 </View>
               );
             }}

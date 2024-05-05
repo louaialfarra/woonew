@@ -14,7 +14,7 @@ import CartScreen from "./screens/cartScreen";
 import Checkout from "./screens/checkoutScreen";
 import OrderSuccess from "./screens/orderScreen";
 import HomePage from "./screens/homePage";
-
+import NewProduct from "./screens/newProduct";
 import Category from "./screens/category";
 import SearchScreen from "./screens/searchScreen";
 import { Feather } from "@expo/vector-icons";
@@ -44,7 +44,7 @@ export default function App() {
               headerRight: () => <SearchButton />,
             }}
           >
-            <Tab.Screen name="Home" component={HomePage} />
+            <Tab.Screen name="HomeStack" component={HomeScreenStack} />
             <Tab.Screen
               name="Product List"
               component={ProductListStackScreen}
@@ -61,7 +61,14 @@ export default function App() {
     </Provider>
   );
 }
-
+function HomeScreenStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="home" component={HomePage} />
+      <Stack.Screen name="newProduct" component={NewProduct} />
+    </Stack.Navigator>
+  );
+}
 function ProductListStackScreen() {
   return (
     <Stack.Navigator>
