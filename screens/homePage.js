@@ -38,7 +38,6 @@ const HomePage = () => {
       console.log(rate + "this is home rate");
     } catch {}
   };
-  getrate();
   //console.log(rate + "thsi is rate home");
 
   const data = [
@@ -68,7 +67,12 @@ const HomePage = () => {
 
   _renderItem = ({ item, index }) => {
     return (
-      <TouchableOpacity activeOpacity={1} onPress={handleItemPress(index)}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => {
+          handleItemPress;
+        }}
+      >
         <View style={{ alignItems: "center" }}>
           <Image
             source={item.image}
@@ -85,6 +89,8 @@ const HomePage = () => {
     );
   };
   useEffect(() => {
+    getrate();
+
     const fetchProduts = async () => {
       try {
         const authString = `${apiKey}:${apiSecret}`;
@@ -92,6 +98,15 @@ const HomePage = () => {
         const response = await axios.get(`${apiUrl}/products`, {
           headers: { Authorization: `Basic ${encodedAuth}` },
         });
+        /*
+        const productVariation= await Promise.all(
+          response.data.map((product)=>{
+
+          })
+
+        )
+*/
+
         setNewProduct(response.data);
       } catch (error) {
         console.log(error);
