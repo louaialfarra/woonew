@@ -91,28 +91,48 @@ const HomePage = () => {
   useEffect(() => {
     getrate();
 
-    const fetchProduts = async () => {
+    const fetchProducts = async () => {
       try {
         const authString = `${apiKey}:${apiSecret}`;
         const encodedAuth = Base64.encode(authString);
-        const response = await axios.get(`${apiUrl}/products`, {
+        const response = await axios.get(`${apiUrl}/products?per_page=20`, {
           headers: { Authorization: `Basic ${encodedAuth}` },
         });
-        /*
-        const productVariation= await Promise.all(
-          response.data.map((product)=>{
+        const products = response.data;
 
+        const productVariation = await Promise.all(
+          products.map(async (product) => {
+            if (product.on_sale === true) {
+              const variationsResponse = await axios.get(
+                `${apiUrl}/products/${product.id}/variations`,
+                {
+                  headers: {
+                    Authorization: `Basic ${encodedAuth}`,
+                  },
+                }
+              );
+              const variations = variationsResponse.data;
+              const saleprice = variations[0].sale_price;
+
+              console.log(saleprice + " this is varia");
+              return {
+                ...product,
+                variations,
+                saleprice,
+              };
+            } else {
+              return product;
+            }
           })
+        );
 
-        )
-*/
-
-        setNewProduct(response.data);
+        setNewProduct(productVariation);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchProduts();
+
+    fetchProducts();
   }, []);
   return (
     <ScrollView>
@@ -161,7 +181,7 @@ const HomePage = () => {
                     />
                     <Text> PRICE {(item.price * rate).toLocaleString()}</Text>
                   </TouchableOpacity>
-                  <Text> PRICE {item.price}</Text>
+                  <Text> SALE {item.saleprice}</Text>
                 </View>
               );
             }}
