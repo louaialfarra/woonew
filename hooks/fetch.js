@@ -36,7 +36,7 @@ const fetchProducts = async (page, search) => {
         const priceInCurrency = product.price * currencyRate;
         const currency = "SYP";
 
-        if (product.type === "variable") {
+        if (product.on_sale === true && product.type === "variable") {
           const variationResponse = await axios.get(
             `${apiUrl}/products/${product.id}/variations`,
             {

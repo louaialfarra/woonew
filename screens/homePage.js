@@ -60,19 +60,18 @@ const HomePage = () => {
       image: IMAGES.MEN,
     },
   ];
-  const handleItemPress = () => {};
+  const handleItemPress = () => {
+    if (activeDotIndex === 1) {
+      navigation.navigate("Cart");
+    }
+  };
   const handleProductPress = (product) => {
     navigation.navigate("newProduct", { product });
   };
 
   _renderItem = ({ item, index }) => {
     return (
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => {
-          handleItemPress;
-        }}
-      >
+      <TouchableOpacity activeOpacity={1} onPress={handleItemPress}>
         <View style={{ alignItems: "center" }}>
           <Image
             source={item.image}
@@ -165,6 +164,9 @@ const HomePage = () => {
         <Text>this is homepage</Text>
         <View style={{ flex: 1, alignItems: "center" }}>
           <FlatList
+            viewabilityConfig={{
+              viewAreaCoveragePercentThreshold: 100, // Ensure item is fully visible
+            }}
             horizontal={true}
             data={newProduct}
             renderItem={({ item }) => {

@@ -17,8 +17,6 @@ const NewProduct = () => {
       <Text>this is variation test</Text>
       <Text>{product.variations[0]}</Text>
 
-      <Text>{product.categories[0].name}</Text>
-      <Text>{product.attributes[0].name}</Text>
       <Text>this is map arrray</Text>
       {product.attributes.map((attribute) => (
         <View key={attribute.name}>
@@ -48,7 +46,6 @@ const NewProduct = () => {
           </View>
         </View>
       ))}
-      <Text>{product.attributes[0].options}</Text>
     </View>
   );
 };
