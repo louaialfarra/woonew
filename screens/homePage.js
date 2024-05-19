@@ -133,6 +133,34 @@ const HomePage = () => {
 
     fetchProducts();
   }, []);
+
+  const renderRecentProducts = ({ item }) => {
+    const hasSalePrice = item.variations.some(
+      (variation) => variation.sale_price
+    );
+
+    return (
+      <View style={{ paddingHorizontal: 10 }}>
+        <TouchableOpacity onPress={() => handleProductPress(item)}>
+          <Image
+            source={{ uri: item.images[0].src }}
+            style={{
+              height: 150,
+              width: 150,
+              borderRadius: 5,
+            }}
+          />
+          {hasSalePrice ? (
+            <Text>Sale Price{(item.price * rate).toLocaleString()}</Text>
+          ) : (
+            <Text> PRICE {(item.price * rate).toLocaleString()}</Text>
+          )}
+        </TouchableOpacity>
+        <Text> SALE {item.saleprice}</Text>
+      </View>
+    );
+  };
+
   return (
     <ScrollView>
       <View style={{ marginTop: 10, flex: 1 }}>
@@ -161,7 +189,6 @@ const HomePage = () => {
           />
         </View>
         <Text>this is homepage</Text>
-        <Text>this is homepage</Text>
         <View style={{ flex: 1, alignItems: "center" }}>
           <FlatList
             viewabilityConfig={{
@@ -169,24 +196,7 @@ const HomePage = () => {
             }}
             horizontal={true}
             data={newProduct}
-            renderItem={({ item }) => {
-              return (
-                <View style={{ paddingHorizontal: 10 }}>
-                  <TouchableOpacity onPress={() => handleProductPress(item)}>
-                    <Image
-                      source={{ uri: item.images[0].src }}
-                      style={{
-                        height: 150,
-                        width: 150,
-                        borderRadius: 5,
-                      }}
-                    />
-                    <Text> PRICE {(item.price * rate).toLocaleString()}</Text>
-                  </TouchableOpacity>
-                  <Text> SALE {item.saleprice}</Text>
-                </View>
-              );
-            }}
+            renderItem={renderRecentProducts}
           />
         </View>
         <Text>test</Text>

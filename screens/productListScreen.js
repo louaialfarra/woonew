@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, currencyRate } from "react-redux";
 import {
   ActivityIndicator,
   Text,
@@ -25,6 +25,7 @@ const ProductListScreen = ({ navigation }) => {
   const [page, setPage] = useState(1);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
   const selectedOptions = useSelector((store) => store.cart.selectedOptions);
+  const rate = useSelector((store) => store.cart.currencyRate);
 
   const loadProducts = async () => {
     try {
@@ -40,7 +41,7 @@ const ProductListScreen = ({ navigation }) => {
       console.error(error);
     }
   };
-
+  console.log(rate + "this is rate selector ");
   const handleLoadMore = () => {
     if (!isLoadingMore && hasMoreProducts) {
       setIsLoadingMore(true);
@@ -168,11 +169,12 @@ const ProductListScreen = ({ navigation }) => {
 
           {hasVariationSalePrice ? (
             <Text style={styles.salePrice}>
-              Sale Price: {item.salePrice.toLocaleString()}
+              Sale Price: {(item.salePrice * rate).toLocaleString()}
             </Text>
           ) : (
             <Text style={styles.price}>
-              Price: {item.priceInCurrency.toLocaleString()} {item.currency}
+              Price: {(item.priceInCurrency * rate).toLocaleString()}{" "}
+              {item.currency}
             </Text>
           )}
         </TouchableOpacity>
