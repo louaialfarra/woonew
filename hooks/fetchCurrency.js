@@ -7,7 +7,6 @@ import {
 import axios from "axios";
 import Base64 from "js-base64";
 
-const apiUrl = WOO_API_URL;
 const apiKey = CONSUMER_KEY;
 const apiSecret = CONSUMER_SECRET;
 const apiCur = WOO_API_CURRENCY;

@@ -1,13 +1,12 @@
 import { WOO_API_URL, CONSUMER_KEY, CONSUMER_SECRET } from "@env";
 import axios from "axios";
 import Base64 from "js-base64";
-import { useSelector } from "react-redux";
-import fetchCurrencyData from "../hooks/fetchCurrency";
+
 const apiUrl = WOO_API_URL;
 const apiKey = CONSUMER_KEY;
 const apiSecret = CONSUMER_SECRET;
 
-const fetchProducts = async (page, search) => {
+const fetchProducts = async (page, search, on_sale) => {
   try {
     const authString = `${apiKey}:${apiSecret}`;
     const encodedAuth = Base64.encode(authString);
@@ -23,6 +22,7 @@ const fetchProducts = async (page, search) => {
         orderby: "date",
         order: "desc",
         search,
+        on_sale,
       },
     });
 
@@ -44,11 +44,10 @@ const fetchProducts = async (page, search) => {
             }
           );
           const variations = variationResponse.data;
-          const reg = variations[0].regular_price;
-          const regularPrice = reg;
+          const regularPrice = variations[0].regular_price;
 
-          const sale = variations[0].sale_price;
-          const salePrice = sale;
+          const salePrice = variations[0].sale_price;
+
           console.log(salePrice);
 
           return {

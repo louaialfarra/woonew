@@ -1,6 +1,7 @@
 import { useRoute } from "@react-navigation/native";
 import { View, Text, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+
 const NewProduct = () => {
   const route = useRoute();
   const { product } = route.params;
@@ -15,7 +16,6 @@ const NewProduct = () => {
       <Text>{product.sale_price}</Text>
       <Text>{product.price}</Text>
       <Text>this is variation test</Text>
-      <Text>{product.variations[0]}</Text>
 
       <Text>this is map arrray</Text>
       {product.attributes.map((attribute) => (

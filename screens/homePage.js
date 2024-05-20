@@ -13,6 +13,8 @@ import { useRef, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 
+import fetchProducts from "../hooks/fetch";
+
 import { WOO_API_URL, CONSUMER_KEY, CONSUMER_SECRET } from "@env";
 import axios from "axios";
 import Base64 from "js-base64";
@@ -29,6 +31,7 @@ const HomePage = () => {
   const [activeDotIndex, setActiveDotIndex] = useState(0);
   const [newProduct, setNewProduct] = useState([]);
   const [rate, setRate] = useState();
+  const [saleProducts, setSaleProducts] = useState([]);
 
   const getrate = async () => {
     try {
@@ -90,48 +93,18 @@ const HomePage = () => {
   useEffect(() => {
     getrate();
 
-    const fetchProducts = async () => {
-      try {
-        const authString = `${apiKey}:${apiSecret}`;
-        const encodedAuth = Base64.encode(authString);
-        const response = await axios.get(`${apiUrl}/products?per_page=20`, {
-          headers: { Authorization: `Basic ${encodedAuth}` },
-        });
-        const products = response.data;
+    const loadProducts = async () => {
+      const data = await fetchProducts(1);
 
-        const productVariation = await Promise.all(
-          products.map(async (product) => {
-            if (product.on_sale === true) {
-              const variationsResponse = await axios.get(
-                `${apiUrl}/products/${product.id}/variations`,
-                {
-                  headers: {
-                    Authorization: `Basic ${encodedAuth}`,
-                  },
-                }
-              );
-              const variations = variationsResponse.data;
-              const saleprice = variations[0].sale_price;
-
-              console.log(saleprice + " this is varia");
-              return {
-                ...product,
-                variations,
-                saleprice,
-              };
-            } else {
-              return product;
-            }
-          })
-        );
-
-        setNewProduct(productVariation);
-      } catch (error) {
-        console.log(error);
-      }
+      setNewProduct(data);
     };
+    const loadSaleProducts = async () => {
+      const saledata = await fetchProducts(1, undefined, true);
 
-    fetchProducts();
+      setSaleProducts(saledata);
+    };
+    loadSaleProducts();
+    loadProducts();
   }, []);
 
   const renderRecentProducts = ({ item }) => {
@@ -151,7 +124,12 @@ const HomePage = () => {
             }}
           />
           {hasSalePrice ? (
-            <Text>Sale Price{(item.price * rate).toLocaleString()}</Text>
+            <>
+              <Text>
+                oldPrice:{(item.regularPrice * rate).toLocaleString()}
+              </Text>
+              <Text>Sale Price{(item.salePrice * rate).toLocaleString()}</Text>
+            </>
           ) : (
             <Text> PRICE {(item.price * rate).toLocaleString()}</Text>
           )}
@@ -188,14 +166,28 @@ const HomePage = () => {
             }}
           />
         </View>
-        <Text>this is homepage</Text>
+
         <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={{ fontSize: 24, fontWeight: "700", paddingBottom: 30 }}>
+            Recent Products
+          </Text>
           <FlatList
             viewabilityConfig={{
               viewAreaCoveragePercentThreshold: 100, // Ensure item is fully visible
             }}
             horizontal={true}
             data={newProduct}
+            renderItem={renderRecentProducts}
+          />
+          <Text style={{ fontSize: 24, fontWeight: "700", paddingBottom: 30 }}>
+            Sale Products
+          </Text>
+          <FlatList
+            viewabilityConfig={{
+              viewAreaCoveragePercentThreshold: 100, // Ensure item is fully visible
+            }}
+            horizontal={true}
+            data={saleProducts}
             renderItem={renderRecentProducts}
           />
         </View>
