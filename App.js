@@ -17,6 +17,7 @@ import HomePage from "./screens/homePage";
 import NewProduct from "./screens/newProduct";
 import Category from "./screens/category";
 import SearchScreen from "./screens/searchScreen";
+import CategoryPage from "./screens/categoryPage";
 import { Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Tab = createBottomTabNavigator();
@@ -29,6 +30,7 @@ export default function App() {
         <NavigationContainer>
           <Tab.Navigator
             screenOptions={{
+              tabBarActiveTintColor: "red",
               headerTitleAlign: "center",
               headerStyle: { backgroundColor: "black", height: 120 },
               headerTitleStyle: { fontWeight: "bold" },
@@ -44,7 +46,19 @@ export default function App() {
               headerRight: () => <SearchButton />,
             }}
           >
-            <Tab.Screen name="HomeStack" component={HomeScreenStack} />
+            <Tab.Screen
+              name="HomeStack"
+              component={HomeScreenStack}
+              options={{
+                tabBarIcon: ({ focused }) => (
+                  <Feather
+                    name="home"
+                    size={24}
+                    color={focused ? "red" : "black"}
+                  />
+                ),
+              }}
+            />
             <Tab.Screen
               name="Product List"
               component={ProductListStackScreen}
@@ -66,6 +80,7 @@ function HomeScreenStack() {
     <Stack.Navigator>
       <Stack.Screen name="home" component={HomePage} />
       <Stack.Screen name="newProduct" component={NewProduct} />
+      <Stack.Screen name="categoryPage" component={CategoryPage} />
     </Stack.Navigator>
   );
 }

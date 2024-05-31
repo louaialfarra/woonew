@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import IMAGES from "../assets/src/images";
@@ -32,6 +33,7 @@ const HomePage = () => {
   const [newProduct, setNewProduct] = useState([]);
   const [rate, setRate] = useState();
   const [saleProducts, setSaleProducts] = useState([]);
+  const [category, setCategory] = useState([]);
 
   const getrate = async () => {
     try {
@@ -90,6 +92,27 @@ const HomePage = () => {
       </TouchableOpacity>
     );
   };
+
+  const loadCategory = async () => {
+    try {
+      const authString = `${apiKey}:${apiSecret}`;
+      const encodedAuth = Base64.encode(authString);
+
+      const response = await axios.get(`${apiUrl}/products/categories`, {
+        headers: {
+          Authorization: `Basic ${encodedAuth}`,
+        },
+        params: { parent: 0, per_page: 30 },
+      });
+
+      const catdata = response.data;
+      setCategory(catdata);
+      return catdata;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     getrate();
 
@@ -105,6 +128,7 @@ const HomePage = () => {
     };
     loadSaleProducts();
     loadProducts();
+    loadCategory();
   }, []);
 
   const renderRecentProducts = ({ item }) => {
@@ -136,6 +160,41 @@ const HomePage = () => {
         </TouchableOpacity>
         <Text> SALE {item.saleprice}</Text>
       </View>
+    );
+  };
+
+  const handleCategoryPress = (category) => {
+    navigation.navigate("categoryPage", { category });
+    console.log(category.id + "this is cat");
+  };
+
+  const renderCategoryItem = ({ item }) => {
+    const imageSrc = item.image?.src;
+
+    return (
+      <TouchableOpacity onPress={() => handleCategoryPress(item)}>
+        <View style={{ marginLeft: 10, alignItems: "center" }}>
+          {imageSrc ? (
+            <Image source={{ uri: imageSrc }} style={styles.imagecontainer} />
+          ) : (
+            <View
+              style={[
+                styles.imagecontainer,
+                { justifyContent: "center", alignItems: "center" },
+              ]}
+            >
+              <Text
+                style={{
+                  fontSize: 9,
+                }}
+              >
+                No Image Available
+              </Text>
+            </View>
+          )}
+          <Text>{item.name}</Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -192,9 +251,126 @@ const HomePage = () => {
           />
         </View>
         <Text>test</Text>
+        <View>
+          <Text>Categories:</Text>
+          <FlatList
+            data={category}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderCategoryItem}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
       </View>
     </ScrollView>
   );
 };
 
 export default HomePage;
+
+const styles = StyleSheet.create({
+  imagecontainer: {
+    height: 80,
+    width: 80,
+    borderRadius: 50,
+    borderColor: "green",
+    borderWidth: 2,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    //alignItems: "center",
+    //justifyContent: "center",
+  },
+  productItem: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  cartItemContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  cartItemImage: {
+    height: 50,
+    width: 50,
+    marginRight: 10,
+  },
+
+  submitButton: {
+    backgroundColor: "blue",
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  submitButtonText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  attributeOptions: {
+    flexDirection: "row",
+    marginTop: 5,
+  },
+  attributeOption: {
+    padding: 5,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+  },
+  selectedAttributeOption: {
+    backgroundColor: "lightblue",
+  },
+  imageGallery: {
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+  productImage: {
+    width: 150,
+    height: 150,
+    marginRight: 5,
+    borderWidth: 1,
+    borderColor: "gray",
+  },
+  selectedImage: {
+    borderWidth: 2,
+    borderColor: "blue",
+  },
+  selectedProductImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "gray",
+  },
+  attributeOptions: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  attributeOption: {
+    marginRight: 10,
+    padding: 5,
+    borderWidth: 1,
+    borderColor: "gray",
+  },
+  selectedAttributeOption: {
+    borderColor: "blue",
+  },
+  itemName: {
+    fontWeight: "bold",
+  },
+  oldPrice: {
+    textDecorationLine: "line-through",
+  },
+  salePrice: {
+    color: "red",
+  },
+});
