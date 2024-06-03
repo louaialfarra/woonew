@@ -6,7 +6,7 @@ const apiUrl = WOO_API_URL;
 const apiKey = CONSUMER_KEY;
 const apiSecret = CONSUMER_SECRET;
 
-const fetchProducts = async (page, search, on_sale) => {
+const fetchProducts = async (page, search, on_sale, category) => {
   try {
     const authString = `${apiKey}:${apiSecret}`;
     const encodedAuth = Base64.encode(authString);
@@ -23,6 +23,7 @@ const fetchProducts = async (page, search, on_sale) => {
         order: "desc",
         search,
         on_sale,
+        category,
       },
     });
 

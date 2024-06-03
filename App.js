@@ -20,6 +20,7 @@ import SearchScreen from "./screens/searchScreen";
 import CategoryPage from "./screens/categoryPage";
 import { Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
