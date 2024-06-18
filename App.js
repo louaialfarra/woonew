@@ -29,24 +29,7 @@ export default function App() {
     <Provider store={store}>
       <SafeAreaView style={{ flex: 1, backgroundColor: "gray" }}>
         <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={{
-              tabBarActiveTintColor: "red",
-              headerTitleAlign: "center",
-              headerStyle: { backgroundColor: "black", height: 120 },
-              headerTitleStyle: { fontWeight: "bold" },
-              //headerTitle: "Hooboo" for text
-              headerTitle: () => (
-                <View style={{ alignItems: "center" }}>
-                  <Image
-                    source={require("./assets/logo/hooboo_logo.png")}
-                    style={{ height: 50, resizeMode: "contain" }}
-                  />
-                </View>
-              ),
-              headerRight: () => <SearchButton />,
-            }}
-          >
+          <Tab.Navigator screenOptions={{ headerShown: false }}>
             <Tab.Screen
               name="HomeStack"
               component={HomeScreenStack}
@@ -78,7 +61,26 @@ export default function App() {
 }
 function HomeScreenStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerTintColor: "white",
+        headerBackTitleStyle: { fontSize: 18 },
+        tabBarActiveTintColor: "red",
+        headerTitleAlign: "center",
+        headerStyle: { backgroundColor: "black", height: 120 },
+        headerTitleStyle: { fontWeight: "bold" },
+        //headerTitle: "Hooboo" for text
+        headerTitle: () => (
+          <View style={{ alignItems: "center" }}>
+            <Image
+              source={require("./assets/logo/hooboo_logo.png")}
+              style={{ height: 50, resizeMode: "contain" }}
+            />
+          </View>
+        ),
+        headerRight: () => <SearchButton />,
+      }}
+    >
       <Stack.Screen name="home" component={HomePage} />
       <Stack.Screen name="newProduct" component={NewProduct} />
       <Stack.Screen name="categoryPage" component={CategoryPage} />
@@ -87,7 +89,24 @@ function HomeScreenStack() {
 }
 function ProductListStackScreen() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: "red",
+        headerTitleAlign: "center",
+        headerStyle: { backgroundColor: "black", height: 120 },
+        headerTitleStyle: { fontWeight: "bold" },
+        //headerTitle: "Hooboo" for text
+        headerTitle: () => (
+          <View style={{ alignItems: "center" }}>
+            <Image
+              source={require("./assets/logo/hooboo_logo.png")}
+              style={{ height: 50, resizeMode: "contain" }}
+            />
+          </View>
+        ),
+        headerRight: () => <SearchButton />,
+      }}
+    >
       <Stack.Screen name="ProductList">
         {(props) => <ProductListScreen {...props} />}
       </Stack.Screen>
