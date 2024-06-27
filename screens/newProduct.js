@@ -168,21 +168,24 @@ const NewProduct = () => {
                   <View
                     key={option}
                     style={{
-                      alignItems: "center",
                       padding: 10,
                       borderRadius: 8,
                     }}
                   >
                     <TouchableOpacity
                       onPress={() => handleOptionSelect(attribute.name, option)}
-                      style={{
-                        alignItems: "center",
-                        padding: 12,
-                        borderColor: "lightblue",
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        backgroundColor: color,
-                      }}
+                      style={[
+                        {
+                          alignItems: "center",
+                          padding: 12,
+                          borderColor: "lightblue",
+                          borderWidth: 1,
+                          borderRadius: 4,
+                          backgroundColor: color,
+                        },
+                        selectedOptions[attribute.name] === option &&
+                          styles.selectedAttributeOption,
+                      ]}
                     ></TouchableOpacity>
                   </View>
                 );
@@ -198,13 +201,17 @@ const NewProduct = () => {
                   >
                     <TouchableOpacity
                       onPress={() => handleOptionSelect(attribute.name, option)}
-                      style={{
-                        alignItems: "center",
-                        padding: 8,
-                        borderColor: "lightblue",
-                        borderWidth: 2,
-                        borderRadius: 8,
-                      }}
+                      style={[
+                        {
+                          alignItems: "center",
+                          padding: 8,
+                          borderColor: "lightblue",
+                          borderWidth: 2,
+                          borderRadius: 8,
+                        },
+                        selectedOptions[attribute.name] === option &&
+                          styles.selectedAttributeOption,
+                      ]}
                     >
                       <Text style={{ fontWeight: "500" }}>{option}</Text>
                     </TouchableOpacity>
@@ -218,12 +225,22 @@ const NewProduct = () => {
       <View
         style={{
           alignItems: "center",
-          marginTop: 50,
-          justifyContent: "center",
+          marginTop: 20,
         }}
       >
-        <TouchableOpacity onPress={handleAddToCart}>
-          <Text>Add to Cart</Text>
+        <TouchableOpacity
+          onPress={handleAddToCart}
+          style={{
+            borderWidth: 2,
+            padding: 20,
+            paddingHorizontal: 60,
+            borderRadius: 50,
+            backgroundColor: "black",
+          }}
+        >
+          <Text style={{ color: "white", fontWeight: "700", fontSize: 16 }}>
+            Add to Cart
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -288,9 +305,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 5,
   },
-  selectedAttributeOption: {
-    backgroundColor: "lightblue",
-  },
+
   imageGallery: {
     marginBottom: 20,
   },
@@ -324,7 +339,8 @@ const styles = StyleSheet.create({
     borderColor: "gray",
   },
   selectedAttributeOption: {
-    borderColor: "blue",
+    borderColor: "black",
+    borderWidth: 2,
   },
   itemName: {
     fontWeight: "bold",

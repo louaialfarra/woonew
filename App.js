@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import Toast from "react-native-toast-message";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-
+import { Entypo } from "@expo/vector-icons";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -47,10 +47,31 @@ export default function App() {
               name="Product List"
               component={ProductListStackScreen}
             />
-            <Tab.Screen name="Cart" component={CartScreen} />
+            <Tab.Screen
+              name="Cart"
+              component={CartScreen}
+              options={{
+                tabBarIcon: ({ focused }) => (
+                  <Feather
+                    name="shopping-cart"
+                    size={24}
+                    color={focused ? "red" : "black"}
+                  />
+                ),
+              }}
+            />
             <Tab.Screen
               name="Category List Screen"
               component={CategoryListStack}
+              options={{
+                tabBarIcon: ({ focused }) => (
+                  <Entypo
+                    name="shop"
+                    size={24}
+                    color={focused ? "red" : "black"}
+                  />
+                ),
+              }}
             />
           </Tab.Navigator>
         </NavigationContainer>
