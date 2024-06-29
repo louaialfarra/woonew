@@ -94,23 +94,26 @@ const CartScreen = ({ navigation }) => {
               </Text>
             </View>
           ))}
-          <View style={styles.quantityContainer}>
-            <TouchableOpacity
-              style={styles.quantityButton}
-              onPress={() => handleDecrementQuantity(item)}
-              disabled={quantity === 1}
-            >
-              <Text style={styles.quantityButtonText}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.quantityText}>{quantity}</Text>
-            <TouchableOpacity
-              style={styles.quantityButton}
-              onPress={() => handleIncrementQuantity(item)}
-            >
-              <Text style={styles.quantityButtonText}>+</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity onPress={() => handleRemoveItem(item)}>
+        </View>
+        <View style={styles.quantityContainer}>
+          <TouchableOpacity
+            style={styles.quantityButton}
+            onPress={() => handleDecrementQuantity(item)}
+            disabled={quantity === 1}
+          >
+            <Text style={styles.quantityButtonText}>-</Text>
+          </TouchableOpacity>
+          <Text style={styles.quantityText}>{quantity}</Text>
+          <TouchableOpacity
+            style={styles.quantityButton}
+            onPress={() => handleIncrementQuantity(item)}
+          >
+            <Text style={styles.quantityButtonText}>+</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleRemoveItem(item)}
+            style={{ marginTop: 10 }}
+          >
             <Feather name="trash" size={20} color="red" />
           </TouchableOpacity>
         </View>
@@ -155,8 +158,7 @@ export default CartScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
+    backgroundColor: "#1110",
     justifyContent: "center",
   },
   productItem: {
@@ -168,17 +170,20 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ccc",
   },
   cartItemContainer: {
+    marginHorizontal: 25,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    backgroundColor: "white",
+    marginVertical: 10,
+    borderRadius: 20,
   },
   cartItemImage: {
-    height: 50,
-    width: 50,
+    height: 100,
+    width: 100,
     marginRight: 10,
+    borderRadius: 10,
   },
   input: {
     height: 40,
@@ -255,5 +260,13 @@ const styles = StyleSheet.create({
   },
   salePrice: {
     color: "red",
+  },
+  quantityContainer: {
+    alignItems: "center",
+  },
+  quantityButton: {
+    paddingHorizontal: 7,
+    backgroundColor: "lightgray",
+    borderRadius: 25,
   },
 });
