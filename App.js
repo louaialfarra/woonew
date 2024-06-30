@@ -105,6 +105,9 @@ function HomeScreenStack() {
       <Stack.Screen name="home" component={HomePage} />
       <Stack.Screen name="newProduct" component={NewProduct} />
       <Stack.Screen name="categoryPage" component={CategoryPage} />
+      <Stack.Screen name="Checkout">
+        {(props) => <Checkout {...props} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 }

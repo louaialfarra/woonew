@@ -23,6 +23,8 @@ const CartScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   console.log(currency + "this is curency cart");
 
+  const rate = useSelector((state) => state.cart.currencyRate);
+
   const handleCheckout = () => {
     const updatedCartItems = cartItems.map((item) => {
       const updatedQuantity = quantityMap[item.id] || 1;
@@ -71,7 +73,7 @@ const CartScreen = ({ navigation }) => {
     const imageSrc = item.images?.[0]?.src;
     const quantity = quantityMap[item.id] || 1;
 
-    const subtotal = item.priceInCurrency * quantity;
+    const subtotal = item.priceInCurrency * rate * quantity;
 
     return (
       <View style={styles.cartItemContainer}>
@@ -126,6 +128,7 @@ const CartScreen = ({ navigation }) => {
     (total, item) => total + item.priceInCurrency * (quantityMap[item.id] || 1),
     0
   );
+  const totalP = totalPrice * rate;
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Cart</Text>
@@ -139,15 +142,26 @@ const CartScreen = ({ navigation }) => {
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styles.cartItemList}
           />
-          <Text style={styles.totalPriceText}>
-            Total Price: {totalPrice.toLocaleString()} .SYP
-          </Text>
-          <TouchableOpacity
-            style={styles.checkoutButton}
-            onPress={handleCheckout}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              padding: 20,
+              backgroundColor: "white",
+              borderRadius: 20,
+              alignItems: "center",
+            }}
           >
-            <Text style={styles.checkoutButtonText}>Checkout</Text>
-          </TouchableOpacity>
+            <Text style={styles.totalPriceText}>
+              Total {totalP.toLocaleString()} .SYP
+            </Text>
+            <TouchableOpacity
+              style={styles.checkoutButton}
+              onPress={handleCheckout}
+            >
+              <Text style={styles.checkoutButtonText}>Checkout</Text>
+            </TouchableOpacity>
+          </View>
         </>
       )}
     </View>
@@ -268,5 +282,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     backgroundColor: "lightgray",
     borderRadius: 25,
+  },
+  totalPriceText: {
+    fontWeight: "700",
+    fontSize: 18,
+  },
+  checkoutButton: {
+    padding: 8,
+    borderRadius: 25,
+    backgroundColor: "purple",
+  },
+  checkoutButtonText: {
+    marginHorizontal: 10,
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
