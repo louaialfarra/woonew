@@ -50,7 +50,7 @@ const Checkout = ({ navigation, route }) => {
           option: attribute.selectedOption,
         }));
         // Find the matching variation based on selected attributes
-        const variation = item.variations.find((variation) =>
+        /*const variation = item.variations.find((variation) =>
           variation.attributes.every((attribute) =>
             selectedAttributes.some(
               (selectedAttribute) =>
@@ -58,7 +58,7 @@ const Checkout = ({ navigation, route }) => {
                 selectedAttribute.option === attribute.option
             )
           )
-        );
+        );*/
         return {
           product_id: item.id,
           quantity: item.quantity,
@@ -68,7 +68,7 @@ const Checkout = ({ navigation, route }) => {
             key: attribute.name,
             value: attribute.option,
           })),
-          variation_id: variation ? variation.id : 0, // Set the variation ID or 0 if no matching variation found
+          /*variation_id: variation ? variation.id : 0,*/ // Set the variation ID or 0 if no matching variation found
         };
       });
       const orderData = {
