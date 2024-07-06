@@ -131,9 +131,12 @@ const CartScreen = ({ navigation }) => {
   const totalP = totalPrice * rate;
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Cart</Text>
       {cartItems.length === 0 ? (
-        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+        <Image
+          source={require("../assets/empty_cart.png")}
+          style={{ flex: 1 }}
+          resizeMode="contain"
+        />
       ) : (
         <>
           <FlatList

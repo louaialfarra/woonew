@@ -42,6 +42,7 @@ const ProductListScreen = ({ navigation }) => {
     }
   };
   console.log(rate + "this is rate selector ");
+
   const handleLoadMore = () => {
     if (!isLoadingMore && hasMoreProducts) {
       setIsLoadingMore(true);

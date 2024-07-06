@@ -312,33 +312,48 @@ const Category = ({ navigation }) => {
 
     return (
       <View style={styles.productItem}>
-        <TouchableOpacity onPress={() => handleProductPress(item)}>
-          {item.images?.[0]?.src ? (
-            <Image
-              source={{ uri: item.images[0].src }}
-              style={styles.productImage}
-            />
-          ) : (
-            <Text>No image available</Text>
-          )}
+        <View>
+          <TouchableOpacity onPress={() => handleProductPress(item)}>
+            {item.images?.[0]?.src ? (
+              <View style={{ borderWidth: 2 }}>
+                <Image
+                  source={{ uri: item.images[0].src }}
+                  style={styles.productImage}
+                />
+              </View>
+            ) : (
+              <Text>No image available</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.itemName}>{item.name}</Text>
 
-          <Text style={styles.itemName}>{item.name}</Text>
-
-          {hasVariationSalePrice ? (
-            <Text style={styles.salePrice}>
-              Sale Price: {item.salePrice.toLocaleString()}
-            </Text>
-          ) : (
-            <Text style={styles.price}>
-              Price: {item.priceInCurrency.toLocaleString()} {item.currency}
-            </Text>
-          )}
-        </TouchableOpacity>
+        {hasVariationSalePrice ? (
+          <Text style={styles.salePrice}>
+            Sale Price: {item.salePrice.toLocaleString()}
+          </Text>
+        ) : (
+          <Text style={styles.price}>
+            Price: {item.priceInCurrency.toLocaleString()} {item.currency}
+          </Text>
+        )}
         {renderAttributes(item)}
-        <Button title="Add to Cart" onPress={() => handleAddToCart(item)} />
+        <View>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "black",
+              padding: 16,
+              borderRadius: 24,
+            }}
+            onPress={() => handleAddToCart(item)}
+          >
+            <Text style={{ color: "white" }}>Add to Cart</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
+
   const handleLoadMore = () => {
     if (!isLoadingMore && hasMoreProducts) {
       setIsLoadingMore(true);
@@ -351,7 +366,7 @@ const Category = ({ navigation }) => {
     }
   };
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <View>
         <Text>Categories:</Text>
         <FlatList
@@ -402,12 +417,12 @@ const styles = StyleSheet.create({
   },
   productItem: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    backgroundColor: "#cccc",
+    margin: 10,
+    borderRadius: 12,
   },
   cartItemContainer: {
     flexDirection: "row",
@@ -453,8 +468,7 @@ const styles = StyleSheet.create({
   },
   productImage: {
     width: 150,
-    height: 150,
-    marginRight: 5,
+    height: 200,
     borderWidth: 1,
     borderColor: "gray",
   },

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   StyleSheet,
@@ -8,19 +8,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import {
-  WOO_API_URL,
-  CONSUMER_KEY,
-  CONSUMER_SECRET,
-  WOO_API_CURRENCY,
-} from "@env";
+import { WOO_API_URL, CONSUMER_KEY, CONSUMER_SECRET } from "@env";
 import axios from "axios";
 import Base64 from "js-base64";
-//redux files
 
 import fetchCurrencyData from "../hooks/fetchCurrency";
 
-// end of redux
 const apiUrl = WOO_API_URL;
 const apiKey = CONSUMER_KEY;
 const apiSecret = CONSUMER_SECRET;
@@ -32,6 +25,7 @@ const Checkout = ({ navigation, route }) => {
     lastName: "",
     address: "",
     city: "",
+    country: "",
     // Include additional billing fields as needed
   });
 
@@ -77,6 +71,7 @@ const Checkout = ({ navigation, route }) => {
           last_name: billingInfo.lastName,
           address_1: billingInfo.address,
           city: billingInfo.city,
+          country: billingInfo.country,
           // Include additional billing fields as needed
         },
         shipping: {
@@ -84,6 +79,7 @@ const Checkout = ({ navigation, route }) => {
           last_name: billingInfo.lastName,
           address_1: billingInfo.address,
           city: billingInfo.city,
+          country: billingInfo.country,
           // Include additional shipping fields as needed
         },
         line_items: lineItems,
@@ -123,38 +119,64 @@ const Checkout = ({ navigation, route }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Checkout</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        value={billingInfo.firstName}
-        onChangeText={(text) =>
-          setBillingInfo((prevInfo) => ({ ...prevInfo, firstName: text }))
-        }
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        value={billingInfo.lastName}
-        onChangeText={(text) =>
-          setBillingInfo((prevInfo) => ({ ...prevInfo, lastName: text }))
-        }
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Address"
-        value={billingInfo.address}
-        onChangeText={(text) =>
-          setBillingInfo((prevInfo) => ({ ...prevInfo, address: text }))
-        }
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="City"
-        value={billingInfo.city}
-        onChangeText={(text) =>
-          setBillingInfo((prevInfo) => ({ ...prevInfo, city: text }))
-        }
-      />
+      <View>
+        <Text> this is text</Text>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "stretch",
+        }}
+      >
+        <TextInput
+          style={styles.input1}
+          placeholder="First Name"
+          value={billingInfo.firstName}
+          onChangeText={(text) =>
+            setBillingInfo((prevInfo) => ({ ...prevInfo, firstName: text }))
+          }
+        />
+        <TextInput
+          style={styles.input1}
+          placeholder="Last Name"
+          value={billingInfo.lastName}
+          onChangeText={(text) =>
+            setBillingInfo((prevInfo) => ({ ...prevInfo, lastName: text }))
+          }
+        />
+      </View>
+      <View style={{ flexDirection: "row" }}>
+        <TextInput
+          style={[{ flex: 1 }, styles.input1]}
+          placeholder="Address"
+          value={billingInfo.address}
+          onChangeText={(text) =>
+            setBillingInfo((prevInfo) => ({ ...prevInfo, address: text }))
+          }
+        />
+      </View>
+      <View style={{ flexDirection: "row" }}>
+        <TextInput
+          style={styles.input1}
+          placeholder="City"
+          value={billingInfo.city}
+          onChangeText={(text) =>
+            setBillingInfo((prevInfo) => ({ ...prevInfo, city: text }))
+          }
+        />
+        <TextInput
+          style={styles.input1}
+          placeholder="Country"
+          value={billingInfo.country}
+          onChangeText={(text) =>
+            setBillingInfo((prevInfo) => ({ ...prevInfo, country: text }))
+          }
+        />
+      </View>
+      <View>
+        <Text> Payment method : Cash on deleivery</Text>
+      </View>
+
       <TouchableOpacity style={styles.submitButton} onPress={handleOrderSubmit}>
         <Text style={styles.submitButtonText}>Submit Order</Text>
       </TouchableOpacity>
@@ -168,7 +190,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
   },
   productItem: {
     flexDirection: "column",
@@ -191,6 +212,16 @@ const styles = StyleSheet.create({
     width: 50,
     marginRight: 10,
   },
+  input1: {
+    flex: 1,
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    marginHorizontal: 10,
+  },
   input: {
     height: 40,
     borderColor: "#ccc",
@@ -200,14 +231,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   submitButton: {
-    backgroundColor: "blue",
-    paddingVertical: 10,
-    borderRadius: 5,
+    marginVertical: 35,
+    backgroundColor: "purple",
+    padding: 10,
+    borderRadius: 24,
   },
   submitButtonText: {
     color: "white",
     textAlign: "center",
     fontWeight: "bold",
+    fontSize: 16,
   },
   attributeOptions: {
     flexDirection: "row",
