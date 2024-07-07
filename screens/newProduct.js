@@ -83,167 +83,181 @@ const NewProduct = () => {
   };
 
   return (
-    <View style={{ marginTop: 20, marginHorizontal: 20 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <View>
-          <Image
-            source={{ uri: product.images[selectedImageIndex]?.src }}
-            style={{
-              height: 350,
-              width: 275,
-              borderRadius: 25,
-              marginBottom: 25,
-            }}
-          />
-        </View>
-        <View>
-          <ScrollView horizontal>
-            <View style={[styles.imageGallery, { justifyContent: "flex-end" }]}>
-              {product.images && product.images.length > 0 ? (
-                product.images.map((image, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => handleImagePress(index)}
-                  >
-                    <Image
-                      source={{ uri: image.src }}
-                      style={[
-                        styles.productImage,
-                        selectedImageIndex === index && styles.selectedImage,
-                        { marginVertical: 2 },
-                      ]}
-                    />
-                  </TouchableOpacity>
-                ))
-              ) : (
-                <Text>No image available</Text>
-              )}
-            </View>
-          </ScrollView>
-        </View>
-      </View>
-
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <View style={{ flex: 3 }}>
-          <Text style={{ fontFamily: "serif", fontSize: 24, marginLeft: 18 }}>
-            {product.name}
-          </Text>
-        </View>
+    <ScrollView>
+      <View style={{ marginTop: 20, marginHorizontal: 20 }}>
         <View
           style={{
             flexDirection: "row",
-            flex: 2,
             justifyContent: "space-between",
           }}
         >
-          <View style={{ borderWidth: 1, borderColor: "black", height: 30 }} />
-          <Text style={{ fontSize: 20 }}>
-            {(product.price * rate).toLocaleString()} S.p
-          </Text>
+          <View>
+            <Image
+              source={{ uri: product.images[selectedImageIndex]?.src }}
+              style={{
+                height: 350,
+                width: 275,
+                borderRadius: 25,
+                marginBottom: 25,
+              }}
+            />
+          </View>
+          <View>
+            <ScrollView horizontal>
+              <View
+                style={[styles.imageGallery, { justifyContent: "flex-end" }]}
+              >
+                {product.images && product.images.length > 0 ? (
+                  product.images.map((image, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => handleImagePress(index)}
+                    >
+                      <Image
+                        source={{ uri: image.src }}
+                        style={[
+                          styles.productImage,
+                          selectedImageIndex === index && styles.selectedImage,
+                          { marginVertical: 2 },
+                        ]}
+                      />
+                    </TouchableOpacity>
+                  ))
+                ) : (
+                  <Text>No image available</Text>
+                )}
+              </View>
+            </ScrollView>
+          </View>
         </View>
-      </View>
 
-      {/* <Text>{product.salePrice}</Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View style={{ flex: 3 }}>
+            <Text style={{ fontFamily: "serif", fontSize: 24, marginLeft: 18 }}>
+              {product.name}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 2,
+              justifyContent: "space-between",
+            }}
+          >
+            <View
+              style={{ borderWidth: 1, borderColor: "black", height: 30 }}
+            />
+            <Text style={{ fontSize: 20 }}>
+              {(product.price * rate).toLocaleString()} S.p
+            </Text>
+          </View>
+        </View>
+
+        {/* <Text>{product.salePrice}</Text>
       <Text>{product.price}</Text>
       <Text>this is variation test</Text>
 
       <Text>this is map arrray</Text> */}
-      {product.attributes.map((attribute) => (
-        <View
-          key={attribute.name}
-          style={{ flexDirection: "row", alignItems: "center", marginLeft: 20 }}
-        >
-          <Text style={{ fontSize: 16 }}>{attribute.name}:</Text>
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            {attribute.options.map((option) => {
-              const color = colorMap[option.toLowerCase()];
-              colorStyle = { backgroundColor: color };
-              if (attribute.name.toLowerCase() === "color") {
-                return (
-                  <View
-                    key={option}
-                    style={{
-                      padding: 10,
-                      borderRadius: 8,
-                    }}
-                  >
-                    <TouchableOpacity
-                      onPress={() => handleOptionSelect(attribute.name, option)}
-                      style={[
-                        {
-                          alignItems: "center",
-                          padding: 12,
-                          borderColor: "lightblue",
-                          borderWidth: 1,
-                          borderRadius: 4,
-                          backgroundColor: color,
-                        },
-                        selectedOptions[attribute.name] === option &&
-                          styles.selectedAttributeOption,
-                      ]}
-                    ></TouchableOpacity>
-                  </View>
-                );
-              } else {
-                return (
-                  <View
-                    key={option}
-                    style={{
-                      alignItems: "center",
-                      padding: 10,
-                      borderRadius: 8,
-                    }}
-                  >
-                    <TouchableOpacity
-                      onPress={() => handleOptionSelect(attribute.name, option)}
-                      style={[
-                        {
-                          alignItems: "center",
-                          padding: 8,
-                          borderColor: "lightblue",
-                          borderWidth: 2,
-                          borderRadius: 8,
-                        },
-                        selectedOptions[attribute.name] === option &&
-                          styles.selectedAttributeOption,
-                      ]}
+        {product.attributes.map((attribute) => (
+          <View
+            key={attribute.name}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginLeft: 20,
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>{attribute.name}:</Text>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              {attribute.options.map((option) => {
+                const color = colorMap[option.toLowerCase()];
+                colorStyle = { backgroundColor: color };
+                if (attribute.name.toLowerCase() === "color") {
+                  return (
+                    <View
+                      key={option}
+                      style={{
+                        padding: 10,
+                        borderRadius: 8,
+                      }}
                     >
-                      <Text style={{ fontWeight: "500" }}>{option}</Text>
-                    </TouchableOpacity>
-                  </View>
-                );
-              }
-            })}
+                      <TouchableOpacity
+                        onPress={() =>
+                          handleOptionSelect(attribute.name, option)
+                        }
+                        style={[
+                          {
+                            alignItems: "center",
+                            padding: 12,
+                            borderColor: "lightblue",
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            backgroundColor: color,
+                          },
+                          selectedOptions[attribute.name] === option &&
+                            styles.selectedAttributeOption,
+                        ]}
+                      ></TouchableOpacity>
+                    </View>
+                  );
+                } else {
+                  return (
+                    <View
+                      key={option}
+                      style={{
+                        alignItems: "center",
+                        padding: 10,
+                        borderRadius: 8,
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() =>
+                          handleOptionSelect(attribute.name, option)
+                        }
+                        style={[
+                          {
+                            alignItems: "center",
+                            padding: 8,
+                            borderColor: "lightblue",
+                            borderWidth: 2,
+                            borderRadius: 8,
+                          },
+                          selectedOptions[attribute.name] === option &&
+                            styles.selectedAttributeOption,
+                        ]}
+                      >
+                        <Text style={{ fontWeight: "500" }}>{option}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  );
+                }
+              })}
+            </View>
           </View>
-        </View>
-      ))}
-      <View
-        style={{
-          alignItems: "center",
-          marginTop: 20,
-        }}
-      >
-        <TouchableOpacity
-          onPress={handleAddToCart}
+        ))}
+        <View
           style={{
-            borderWidth: 2,
-            padding: 20,
-            paddingHorizontal: 60,
-            borderRadius: 50,
-            backgroundColor: "black",
+            alignItems: "center",
+            marginTop: 20,
           }}
         >
-          <Text style={{ color: "white", fontWeight: "700", fontSize: 16 }}>
-            Add to Cart
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleAddToCart}
+            style={{
+              borderWidth: 2,
+              padding: 20,
+              paddingHorizontal: 60,
+              borderRadius: 50,
+              backgroundColor: "black",
+            }}
+          >
+            <Text style={{ color: "white", fontWeight: "700", fontSize: 16 }}>
+              Add to Cart
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 export default NewProduct;
